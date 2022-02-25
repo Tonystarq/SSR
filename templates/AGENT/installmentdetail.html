@@ -1,0 +1,86 @@
+{% include 'AGENT/base_template.html' %}
+{% load static %}
+{% block content %}
+<div class="input-group">
+    
+    <button type="button" class="btn btn-primary">
+      <i class="fas fa-search"></i>
+    </button>
+  </div>
+
+<div class="content-body">
+    <div class="container-fluid">
+        <div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Installment Details</h4>
+                <form class="d-flex">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                  </form>
+            </div>
+            
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">Sr.No.</th>
+                            <th scope="col">Reference Id</th>
+                            <th scope="col">Plot No </th>
+                            <th scope="col">Name</th>
+                            
+                            
+                            <th scope="col">Mobile No.</th>
+                            <th scope="col">Installment No.</th>
+                            <th scope="col">Installment Amount</th>
+                            <th scope="col">Status</th>
+                            
+                            
+                            
+                            
+                          </tr>
+                        </thead>
+                        <tbody>
+                            <tbody>
+                                <tr>
+                                  <th scope="row">1</th>
+                                  <td>005</td>
+                                  <td>5353</td>
+                                  <td>Ram</td>
+                                  <td>787878787</td>
+                                  <td>765</td>
+                                  <td>76676</td>
+                                  <td><button class="button" style="border-radius: 12px; background-color:#3498DB ;border: none;color: white;padding: 10px;text-align: center;text-decoration: none;display: inline-block;font-size: 15px;margin: 4px 2px;cursor: pointer;">Check Status</button> <td>
+                                  
+                                  
+                                  
+                                </tr>
+                                <tr>
+                                    <th scope="row">2</th>
+                                  <td>005</td>
+                                  <td>5353</td>
+                                  <td>Ram</td>
+                                  <td>787878787</td>
+                                  <td>765</td>
+                                  <td>76676</td>
+                                  <td><button class="button" style="border-radius: 12px; background-color:#3498DB ;border: none;color: white;padding: 10px;text-align: center;text-decoration: none;display: inline-block;font-size: 15px;margin: 4px 2px;cursor: pointer;">Check Status</button> <td>
+                                </tr>
+                                
+                              </tbody>
+                            
+
+                          
+                        </tbody>
+                      </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+    
+{% endblock  %}

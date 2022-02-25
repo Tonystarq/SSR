@@ -1,0 +1,53 @@
+{% extends "base1.html" %}
+{% block content %}
+
+<div class="content-body">
+    <div class="container-fluid">
+        <div class="page-titles">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="javascript:void(0)">Form</a></li>
+                <li class="breadcrumb-item active"><a href="javascript:void(0)">Fund Recieve</a></li>
+            </ol>
+        </div>
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">FUND Recieved</h4>
+                    </div>
+                    {% include 'includes/messages.html' %}
+                    
+                    <div class="card-body">
+                        <form action="{% url 'fundtransfer' %}" enctype="multipart/form-data" method = "POST">
+                            {% csrf_token %}
+                        <div class="form-material">
+                            <div class="cod-md-12 mb-3">
+                                <label class="form-label">User ID</label>
+                                <select class="form-select" aria-label="Default select example" name="ref_id", required>
+                                    
+                                    <option selected> ---Select---</option>
+                                    {% for i in ref_id %}
+                                    <option value="{{i.ref_id}}">{{i.ref_id}}</option>
+                                    {% endfor %}                                 
+                                    
+                                </select>
+                            </div>
+                            <div class="cod-md-12 mb-3">
+                                <label class="form-label">Amount</label>
+                                <input class="form-control" id="timepicker" placeholder="Enter here" name="amount", required  >
+                            </div>
+                            
+                            <div class="col-xl-3 col-xxl-6 col-md-6">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            </div>
+        </div>
+    </div>
+</div>
+    {% endblock %}
