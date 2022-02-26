@@ -168,9 +168,12 @@ def  agent_profile(request):
     return render(request, 'AGENT/agent_profile.html', context)
 
 
-def  agent_approvedplot(request):
+def  agent_approvedplot(self,request):
     # user_profile = SuperAgent.objects.get()
     # user_profile = HOD.objects.get()
+    # user = self.request.user
+    # adaccount_list = BookPlot.objects.filter(user=user)\
+    #                      .values_list('adaccounts', flat=True)
     current_user = request.user
 
     Agent_code = current_user

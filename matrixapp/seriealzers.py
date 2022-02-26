@@ -67,19 +67,18 @@ class KycSerliazer(serializers.ModelSerializer):
 #         fields = ['username']
        
 
-
-class SuperAgentSerliazer(serializers.ModelSerializer):
-    class Meta:
-        model = SuperAgent
-        fields = ['id','admin','reference_id','created_at','updated_at']       
-        depth = 1
- 
+       
 
 class CustomUserSerliazer(serializers.ModelSerializer):
     
     class Meta:
         model = CustomUser
-        fields = ["id",'username','email', 'first_name', 'last_name','password','user_type','rank','user_id','rank']
-       
-
-
+        fields = ['id','first_name','last_name', 'username', 'email','rank','user_id']
+ 
+ 
+class SuperAgentSerliazer(serializers.ModelSerializer):
+    class Meta:
+        model = SuperAgent
+        fields = ['reference_id','created_at','updated_at']       
+        depth = 1
+   

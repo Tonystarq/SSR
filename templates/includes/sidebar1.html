@@ -72,7 +72,7 @@
         
         <ul aria-expanded="false" class = 'deznav-scroll'>
             <li><a href="{% url 'memberlist' %}"> Member List</a></li>
-            <li><a href="{% url 'fundtransfer' %}">Fund Transfer</a></li>
+            {% comment %} <li><a href="{% url 'fundtransfer' %}">Fund Transfer</a></li>
             <li><a href="{% url 'payplotinstallment' %}">Pay Plot Installment</a></li>
             <li><a href="{% url 'updateplotinstallment' %}">Update Plot Installment Details</a></li>
             <li><a href="{% url 'updatebookingdate' %}">Update Booking date & Extra EDC</a></li>
@@ -81,7 +81,7 @@
             <li><a href="property-details.html">Change Rank</a></li>
             
             <li><a href="{% url 'blockassociate' %}">Block Associate</a></li>
-            <li><a href="{% url 'blockassociatelist' %}">Block Associate List</a></li>
+            <li><a href="{% url 'blockassociatelist' %}">Block Associate List</a></li> {% endcomment %}
             
         </ul>
     </li>

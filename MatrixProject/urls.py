@@ -16,8 +16,8 @@ router.register('Plot', API_Views.PlotViewSet,basename="Plot")
 router.register('BookPlot', API_Views.BookPlotViewSet,basename="BookPlot")
 router.register('Kyc', API_Views.KYCViewSet,basename="Kyc")
 # router.register('HOD', API_Views.HODViewSet,basename="HOD")
-router.register('User', API_Views.CustomUserViewSet,basename="User")
-router.register('Agent', API_Views.AgentViewSet,basename="Agent")
+# router.register('User', API_Views.CustomUserViewSet,basename="User")
+# router.register('Agent', API_Views.AgentViewSet,basename="Agent")
 # from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
 
 # from django.contrib.staticfiles.urls import staticfiles_urlpatterns
