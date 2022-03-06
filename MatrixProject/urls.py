@@ -16,8 +16,8 @@ router.register('Plot', API_Views.PlotViewSet,basename="Plot")
 router.register('BookPlot', API_Views.BookPlotViewSet,basename="BookPlot")
 router.register('Kyc', API_Views.KYCViewSet,basename="Kyc")
 # router.register('HOD', API_Views.HODViewSet,basename="HOD")
-# router.register('User', API_Views.CustomUserViewSet,basename="User")
-# router.register('Agent', API_Views.AgentViewSet,basename="Agent")
+router.register('User', API_Views.CustomUserViewSet,basename="User")
+router.register('Agent', API_Views.AgentViewSet,basename="Agent")
 # from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
 
 # from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -74,6 +74,9 @@ urlpatterns = [
     path('fundtransfer/', HOD_Views.fundtransfer,name="fundtransfer"),
     path('viewfunds/<str:id>', HOD_Views.viewfunds,name="viewfunds"),
     path('previewfunds/', HOD_Views.previewfunds,name="previewfunds"),
+    path('previewfunds1/', HOD_Views.previewfunds1,name="previewfunds1"),
+    path('viewfunds1/<str:id>', HOD_Views.viewfunds1,name="viewfunds1"),
+
 
 
     
@@ -117,7 +120,7 @@ urlpatterns = [
     path('plotno/UPDATE', HOD_Views.UPDATE_PlotNo,name="update_plotno"),
     path('plotno/DELETE<str:id>', HOD_Views.DELETE_PlotNo,name="delete_plotno"),
    
-    
+     
     
    
     path('HOD/approvedplote/', HOD_Views.approvedplote,name="approvedplote"),
@@ -140,12 +143,23 @@ urlpatterns = [
     
     # path("signup/", views.signup_view,name="signup-view"),
     
-    
+
+    ############## hod Installment ######################
+
+    path('HOD/add_installment', HOD_Views.ADDInstallment, name='add_installment'),
+    # path('HOD/Sec_installment', HOD_Views.Sec_Installment, name='Sec_Installment'),
+    path('HOD/View_installment', HOD_Views.VIEWInstallment, name='view_installment'),
 
 
      ########################## define for user url ############################
 
-     path('Agent/Home', SuperAgent_Views.Home, name='Agent_Home') ,
+    path('Agent/Home', SuperAgent_Views.Home, name='Agent_Home') ,
+     path('Agent/add_user/',SuperAgent_Views.AgentADD_USER,name="agentadd_user"),
+     path('Agent/customer_view1/',SuperAgent_Views.customer_view1,name="customer_view1"),
+     path('Agent/customer_view1/',SuperAgent_Views.customer_export_csv,name="customer_export-csv1"),
+     path('AGENT/customer/Edit/<str:id>', SuperAgent_Views.customer_edit1,name="customer_edit1"),
+     path('Agent/customer/Update/', SuperAgent_Views.UPDATE_CUSTOMER1,name="update_customer1"),
+     path('Agent/customer/Delete/<str:id>',SuperAgent_Views.DELETE_CUSTOMER1,name="delete_customer1"),
      path('Agent/Agent_bookplot', SuperAgent_Views.Agent_bookplot, name='Agent_bookplot') ,
      path('Agent/installment_detail', SuperAgent_Views.installment_detail, name='installment_detail') ,
      path('Agent/update_account', SuperAgent_Views.update_account, name='update_account') ,
@@ -158,7 +172,13 @@ urlpatterns = [
      path('Agent/get_in_touch', SuperAgent_Views.get_in_touch, name='get_in_touch') ,
      path('Agent/agent_profile', SuperAgent_Views.agent_profile, name='agent_profile') ,
      path('Agent/approvedplot', SuperAgent_Views.agent_approvedplot, name='agent_approvedplot') ,
+    path('Agent/approvedplot/Edit/<str:id>', SuperAgent_Views.edit_bookplot1,name="edit_bookplot1"),
+    path('Agent/approvedplot/Update/', SuperAgent_Views.update_bookplot1,name="update_bookplot1"),
+    path('Agent/approvedplot/Delete/<str:id>',SuperAgent_Views.delete_plot1,name="delete_plot1"),
     
+    path('Agent/add_installment1', SuperAgent_Views.ADDInstallment1, name='add_installment1'),
+    # path('HOD/Sec_installment', HOD_Views.Sec_Installment, name='Sec_Installment'),
+    path('Agent/View_installment1', SuperAgent_Views.VIEWInstallment1, name='view_installment1'),
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)+static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)
 
 

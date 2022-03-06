@@ -124,7 +124,7 @@ def dosuperAgent(request):
 
         if CustomUser.objects.filter(username = username).exists():
             messages.warning(request, "Username is already Taken")
-            return redirect('registeruser')
+            return redirect('Agent_Home')
         
         else:
             user = CustomUser(
@@ -256,6 +256,7 @@ def doAgent(request):
 
 def doLogin(request):
     if request.method == "POST":
+        # print(request.POST.get('email'))
         user = EmailBackEnd.authenticate(request, username=request.POST.get('email'), password = request.POST.get('password'))
         if user!=None:
             login(request,user)

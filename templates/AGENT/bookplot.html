@@ -1,6 +1,8 @@
 {% include 'AGENT/base_template.html' %}
 {% load static %}
 
+{% block content %}
+
 <div class="content-body">
     <div class="container-fluid">
         <div class="page-titles">
@@ -116,8 +118,15 @@
                             </div>
                             <div class="cod-md-12 mb-3">
                                 <label class="form-label">Payable Amount</label>
-                                <input class="form-control" id="timepicker" placeholder="Enter in INR" name="amount" value="{% if selected_plot_no %}{% for plot_no  in plot_no  %}{{ plot_no.plot_rate }}{% endfor %}{% endif %}" readonly>
+                                <input type="text" class="form-control" id="timepicker" placeholder="Enter in INR" name="amount" value="{% if selected_plot_no %}{% for plot_no  in plot_no  %}{{ plot_no.plot_rate }}{% endfor %}{% endif %}" readonly>
                             </div>
+                            <div class="cod-md-12 mb-3">
+                                <label class="form-label">Booking Amount</label>
+                                <input type="text" class="form-control" id="timepicker" placeholder="Enter in INR" name="booking_amount" >
+                            </div>
+                            
+                           
+                            
                             <div class="cod-md-12 mb-3">
                                 <label class="form-label">Monthly Installment</label>
                                 <input class="form-control" id="installment" placeholder="Enter in INR" name="Mnthly_installment" >
@@ -167,7 +176,7 @@
                             <div >
                                 <div class="mb-3 cod-md-12 ">
                                    <label class="form-label">Upload Receipt</label>
-                                   <input type="file" class="form-control" name = "receipt">
+                                   <input type="file" class="form-control" name = "receipt" required>
                                 </div>
                           
                             
@@ -229,3 +238,4 @@
 
   </script>  {% endcomment %}
 
+  {% endblock content %}

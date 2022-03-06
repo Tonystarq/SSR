@@ -9,12 +9,12 @@
 	<meta name="author" content="DexignZone">
 	<meta name="robots" content="index, follow">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="Omah :  Property Admin Dashboard  Bootstrap 5 Template">
-	<meta property="og:title" content="Omah :  Property Admin Dashboard  Bootstrap 5 Template">
-	<meta property="og:description" content="Omah :  Property Admin Dashboard  Bootstrap 5 Template">
-	<meta property="og:image" content="https://omah.dexignzone.com/xhtml/social-image.png">
+	<meta name="description" content="SSR:  Property Admin Dashboard  ">
+	<meta property="og:title" content="SSR :  Property Admin Dashboard ">
+	<meta property="og:description" content="SSR :  Property Admin Dashboard ">
+	{% comment %} <meta property="og:image" content="https://omah.dexignzone.com/xhtml/social-image.png"> {% endcomment %}
 	<meta name="format-detection" content="telephone=no">
-    <title>Omah - Property Bootstrap Admin Dashboard</title>
+    <title>SSR | Property Admin Dashboard</title>
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="images\favicon.png">
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
@@ -71,9 +71,9 @@
                                             <button type="submit" class="btn btn-primary btn-block">Sign Me In</button>
                                         </div>
                                     </form>
-                                     <div class="new-account mt-3">
+                                     {% comment %} <div class="new-account mt-3">
                                         <p>Don't have an account? <a class="text-primary" href="{% url 'signup_admin' %}">Sign up</a></p>
-                                    </div>
+                                    </div> {% endcomment %}
                                     
                                 </div>
                             </div>

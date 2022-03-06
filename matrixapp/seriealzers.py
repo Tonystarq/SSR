@@ -73,12 +73,14 @@ class CustomUserSerliazer(serializers.ModelSerializer):
     
     class Meta:
         model = CustomUser
-        fields = ['id','first_name','last_name', 'username', 'email','rank','user_id']
+        fields = ['id','first_name','last_name', 'username','password', 'email','rank','user_type','user_id']
+        
  
  
 class SuperAgentSerliazer(serializers.ModelSerializer):
     class Meta:
         model = SuperAgent
-        fields = ['reference_id','created_at','updated_at']       
-        depth = 1
+        fields = ['reference_id','created_at','updated_at','admin_id']   
+        depth = 1    
+        
    

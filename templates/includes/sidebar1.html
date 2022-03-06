@@ -34,7 +34,7 @@
             <ul aria-expanded="false">
                <li><a href="{% url 'bookplot' %}">Add Book Plot</a></li>
                 <li><a href="{% url 'approvedplote' %}">Booking Details</a></li>
-                <li><a href="{% url 'searchbar' %}">Search</a></li>
+                {% comment %} <li><a href="{% url 'searchbar' %}">Search</a></li> {% endcomment %}
                 {% comment %} <li><a href="{% url 'bookplot' %}">Book Plot</a></li> {% endcomment %}
                
             </ul>
@@ -48,6 +48,21 @@
                 <li><a href="{% url 'kyc' %}"> Kyc</a></li>
                 {% comment %} <li><a href="{% url 'tokenslip' %}">Token Slip</a></li> {% endcomment %}
                 <li><a href="{% url 'approvedkyc' %}">All Kyc Details</a></li>
+                {% comment %} <li><a href="{% url 'bookplot' %}">Book Plot</a></li> {% endcomment %}
+               
+            </ul>
+         </li>
+         <li>
+            <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+            <i class="flaticon-app"></i>
+            <span class="nav-text">Installment Details</span>
+            </a>
+            <ul aria-expanded="false">
+                <li><a href="{% url 'add_installment' %}"> Installment</a></li>
+                {% comment %} <li><a href="{% url 'Sec_Installment' %}">2nd Installment</a></li> {% endcomment %}
+                <li><a href="{% url 'view_installment' %}">VIEW Installment</a></li>
+                {% comment %} <li><a href="{% url 'tokenslip' %}">Token Slip</a></li> {% endcomment %}
+                {% comment %} <li><a href="{% url 'approvedkyc' %}">All Kyc Details</a></li> {% endcomment %}
                 {% comment %} <li><a href="{% url 'bookplot' %}">Book Plot</a></li> {% endcomment %}
                
             </ul>
@@ -72,9 +87,9 @@
         
         <ul aria-expanded="false" class = 'deznav-scroll'>
             <li><a href="{% url 'memberlist' %}"> Member List</a></li>
-            {% comment %} <li><a href="{% url 'fundtransfer' %}">Fund Transfer</a></li>
-            <li><a href="{% url 'payplotinstallment' %}">Pay Plot Installment</a></li>
-            <li><a href="{% url 'updateplotinstallment' %}">Update Plot Installment Details</a></li>
+            <li><a href="{% url 'fundtransfer' %}">Fund Details</a></li>
+            {% comment %} <li><a href="{% url 'payplotinstallment' %}">VIew Plot Installment</a></li> {% endcomment %}
+            {% comment %} <li><a href="{% url 'updateplotinstallment' %}">Update Plot Installment Details</a></li>
             <li><a href="{% url 'updatebookingdate' %}">Update Booking date & Extra EDC</a></li>
             <li><a href="{% url 'deleteplotinstallment' %}">Delete Plot Installment</a></li>
             <li><a href="{% url 'updateplotrate' %}">Update Plot Rate &  Plot Size(sqft) </a></li>
@@ -84,15 +99,22 @@
             <li><a href="{% url 'blockassociatelist' %}">Block Associate List</a></li> {% endcomment %}
             
         </ul>
-    </li>
+        <li>
 
-    <li><a class="has-arrow ai-icon" href="{% url 'previewfunds'%}" aria-expanded="false">
-      <i class="flaticon-plugin"></i>
-      <span class="nav-text">View Funds</span>
-  </a>
-  
-</li>
-
+         
+         <li>
+            <li>
+               <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+               <i class="flaticon-app"></i>
+               <span class="nav-text">Fund Details</span>
+               </a>
+               <ul aria-expanded="false">
+                  {% comment %} <li><a href="{% url 'previewfunds' %}"> Booking Funds List</a></li> {% endcomment %}
+                  <li><a href="{% url 'previewfunds1' %}">Transfer Funds</a></li>
+                   {% comment %} <li><a href="{% url 'bookplot' %}">Book Plot</a></li> {% endcomment %}
+                  
+               </ul>
+            </li>
 </li>
 <li>
     <a class="has-arrow ai-icon" href="{% url 'profile'%}"><i class="flaticon-money"></i>Settings  <span class="sr-only">(current)</span></a>

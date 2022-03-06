@@ -1,4 +1,5 @@
 {% extends "AGENT/base_template.html" %}
+{% load static %}
 {% block content %}
 <div class="input-group">
     <div class="form-outline">
@@ -16,13 +17,14 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title">Approved Plot</h4>
+                <h4 class="card-title">Booking Details</h4>
                 {% comment %} <form class="d-flex">
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
-                  </form> {% endcomment %}
+                  </form> {% endcomment %}              
                   
             </div>
+            {% include 'includes/messages.html' %}
             <div class= "btn btn-primary">
 
             </div>
@@ -31,7 +33,7 @@
             <div class="card-body">
                 <div class="table-responsive">
                   <a href="{% url 'export-csv' %}"><button type="button" class="btn-group btn-group-sm-1 px-3 btn-secondary text-light">Export CSV</button></a>
-                  <button class="btn-group btn-group-sm-1 px-3 btn-primary " type="button" name="print" aria-label="Print" title="Print" onclick="myfunc()"><i class="fa fa-print "></i> &nbsp;Print</button>
+                  {% comment %} <button class="btn-group btn-group-sm-1 px-3 btn-primary " type="button" name="print" aria-label="Print" title="Print" onclick="myfunc()"><i class="fa fa-print "></i> &nbsp;Print</button> {% endcomment %}
                   {% comment %} <button class="btn btn-secondary" type="button" name="print" aria-label="Print" title="Print"><i class="fa fa-print"></i> </button> {% endcomment %}
                   {% comment %} <button type="button" class="btn-group btn-group-sm-2 px-3 ml-2 btn-secondary" onclick = "myfunc()"><i class="fa fa-print"></i></button> {% endcomment %}
                   <table id="example" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%" >
@@ -55,7 +57,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for book_data1  in booking_data1  %}
+                      {% for book_data1  in booking_data1  %}
                             <tr id="printTable">
                                 <th scope="row">{{forloop.counter}}</th>
                                 {% comment %} <td>Admin</td> {% endcomment %}
@@ -79,7 +81,20 @@
                                 <td>2011/04/25</td>
                                 <td>Remarks</td>
                                 <td>Receipt</td> {% endcomment %}
-                                
+                                <td>
+                                    <div class="dropdown">
+                                        <button type="button" class="btn btn-warning light sharp" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <svg width="20px" height="20px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#000000" cx="5" cy="12" r="2"></circle><circle fill="#000000" cx="12" cy="12" r="2"></circle><circle fill="#000000" cx="19" cy="12" r="2"></circle></g></svg>
+                                        </button>
+                                        <div class="dropdown-menu" style="">
+                                            <a class="dropdown-item" href="{% url 'edit_bookplot1' book_data1.id%}">Edit</a>
+                                            {% comment %} <a class="dropdown-item" href="">Edit</a> {% endcomment %}
+                                            <a class="dropdown-item" href="{% url 'delete_plot1' book_data1.id%}">Delete</a>
+                                            {% comment %} <a class="dropdown-item" href="delete_plot1">Delete</a> {% endcomment %}
+                                            {% comment %} <a class="dropdown-item" href="{{% url 'delete_plot' book_data.id %}}">Cancel</a> {% endcomment %}
+                                        </div>
+                                    </div>
+                                </td>
                                 {% comment %} <td>Edit</td>
                                 <td>Delete</td>  {% endcomment %}
                             </tr>

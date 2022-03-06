@@ -105,7 +105,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'ssrbrokerProject',
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': 'Manish@1999',
         'HOST': '127.0.0.1',
         # 'PORT': '3306',
     }

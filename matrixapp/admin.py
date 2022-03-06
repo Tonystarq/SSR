@@ -1,7 +1,7 @@
 from ast import Add
 from django.contrib import admin
 # from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser,SuperAgent,HOD,BookPlot,AddPlot,Customer,Fundtransfer
+from .models import CustomUser,SuperAgent,HOD,BookPlot,AddPlot,Customer,Fundtransfer,Installment
 
 
 # Register your models here.
@@ -20,3 +20,4 @@ admin.site.register(BookPlot)
 admin.site.register(AddPlot)
 admin.site.register(Customer)
 admin.site.register(Fundtransfer)
+admin.site.register(Installment)

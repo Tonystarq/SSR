@@ -6,7 +6,7 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from matrixapp.models import SuperAgent, AddPlot,HOD,BookPlot, CustomUser, Customer,Kyc,Fundtransfer,FundDetails
+from matrixapp.models import SuperAgent, AddPlot,HOD,BookPlot, CustomUser, Customer,Kyc,Fundtransfer,FundDetails,Installment
 from django.contrib import messages
 # from django.http import HttpResponse, HttpResponseRedirect
 import csv
@@ -57,10 +57,12 @@ def ADD_USER(request):
         if Customer.objects.filter(customer_id = cust_id).exists():
             messages.warning(request, "Customer Id is already Taken")
             return redirect('add_user')
+        owner=customer.owner=request.user
+        customer.owner = owner
         customer.save()
         messages.success(request, "Customer ID Added Successfully !!")
 
-        print(cust_id)
+        # print(cust_id)
 
     return render(request,'HOD/add_user.html')
 
@@ -233,8 +235,9 @@ def  bookplot(request):
     # else:
     #     return render(request, 'HOD/bookplot.html',{})
 
-    
    
+    # book_plot.owner = owner
+
     selected_customer_id = None
     selected_plot_no = None
     customer_Id = Customer.objects.all()
@@ -290,7 +293,10 @@ def  bookplot(request):
             user_id = request.POST.get('user_id')
         
             plot_number = request.POST.get('plot_number')
-            amount = request.POST.get('amount')
+            amount = int(request.POST.get('amount'))
+            booking_amount = int(request.POST.get('booking_amount'))
+            remaining_amount = amount-booking_amount
+            # print(remaining_amount)
             Mnthly_Installment = request.POST.get('Mnthly_installment')
             no_Installment = request.POST.get('no_Installment')
             name = request.POST.get('name')
@@ -301,10 +307,36 @@ def  bookplot(request):
             receipt = request.FILES.get('receipt')
             print(ref_id)
 
-            book_plot = BookPlot(ref_id= ref_id,user_id=user_id,plot_number = plot_number, Payable_amout = amount,Mnthly_Installment = Mnthly_Installment, number_of_Installment = no_Installment, name = name,father_name = father_name , mobile_no = mobile_number, payment_mode = payment_mode ,remarks=remarks,receipt=receipt )
+            book_plot = BookPlot(ref_id= ref_id,user_id=user_id,plot_number = plot_number, Payable_amout = amount,payment_amount=booking_amount,remaining_amount=remaining_amount,Mnthly_Installment = Mnthly_Installment, number_of_Installment = no_Installment, name = name,father_name = father_name , mobile_no = mobile_number, payment_mode = payment_mode ,remarks=remarks,receipt=receipt )
+            owner=book_plot.owner=request.user
+           
+            # installmentt = Installment()
+            # print("heloooooo",owner)
+            book_plot.owner = owner
+
+
+            isntallment = Installment(ref_id= ref_id,user_id=user_id,plot_number = plot_number, Payable_amout = amount,payment_amount = booking_amount,remaining_amount=remaining_amount,name = name, mobile_no = mobile_number, payment_mode = payment_mode ,remarks=remarks,receipt=receipt )
+            owner=isntallment.owner=request.user
+            # print("heloooooo",owner)
+            isntallment.owner = owner
+
+            # if Installment.objects.filter(plot_number = plot_number).exists():
+            #     messages.warning(request, "Plot Number is already Taken")
+            #     return redirect('bookplot')
+            
+            
+
+           
+
+            if BookPlot.objects.filter(plot_number = plot_number).exists():
+                messages.warning(request, "Plot Number is already Taken")
+                return redirect('bookplot')
+            
+            
             book_plot.save()
+            isntallment.save()
             messages.success(request,"Booking Plot Successfully")
-            return render(request, 'HOD/bookplot.html')
+            return redirect('bookplot')
     cus_id = Customer.objects.order_by('customer_id').values_list('customer_id', flat=True)
     plot_num = AddPlot.objects.order_by('plot_no').values_list('plot_no', flat=True)
         
@@ -470,16 +502,42 @@ def UPDATE_BOOKPLOT(request):
 
 
     
-
 def  fundtransfer(request):
-    return render(request, 'HOD/fundtransfer.html')
+    selected_customer_id = None
+    selected_plot_no = None
+    customer_Id = Customer.objects.all()
+    plot_no = AddPlot.objects.all()
+    current_user = request.user
+    code = current_user.user_id
+    
+    rank = current_user.rank
+   
 
+    Funddetails1 = FundDetails.objects.all()
+
+    context = {
+        'Funddetails1': Funddetails1,
+        'code' : code,
+        'rank':rank,
+        # 'plot_number':plot_number,
+        # 'cus_id':cus_id,
+        'customer_Id':customer_Id,
+        'selected_customer_id':selected_customer_id,
+        # 'plot_num':plot_num,
+        'plot_no':plot_no,
+        'selected_plot_no':selected_plot_no
+
+    }
+    return render(request, 'HOD/fundtransfer.html',context)
 def previewfunds(request):
     booking_data = BookPlot.objects.all()
+    # downpayment_data = Installment.objects.all()
+
    
 
     context = {
         'booking_data': booking_data,
+        # 'downpayment_data': downpayment_data
         
         
         # 'code' : code
@@ -492,23 +550,50 @@ def previewfunds(request):
     
 
     return render(request, 'HOD/previewfunds.html',context)
+def previewfunds1(request):
+    booking_data = Installment.objects.all()
+    # downpayment_data = Installment.objects.all()
 
-def  viewfunds(request,id):
+   
+
+    context = {
+        'booking_data': booking_data,
+        # 'downpayment_data': downpayment_data
+        
+        
+        # 'code' : code
+
+    }
+    # approval = BookPlot.objects.all()#.order_by('uname')
+    # return render(request,'show.html',)
     
 
-    ref_id = BookPlot.objects.filter(id=id)
-    # print("ref id")
-    # print(ref_id)
-    k=(str(ref_id))
-    m=(k.rfind('BookPlot:'))
-    f=(m+10)
-    l=(k.rfind(' '))
-    useriddd=(k[f:l])
-    # print("useriddd is")
-    # print(useriddd)
-    amounttt=(k[l+1:-3])
-    # print(amounttt)
-    conn = MySQLdb.connect  (user='root', password='root',
+    
+
+    return render(request, 'HOD/previewfunds1.html',context)
+
+def  viewfunds1(request,id):
+    
+
+    ref_idd = Installment.objects.filter(id=id)
+    print("ref idd")
+    print(ref_idd)
+    ref_id=str(ref_idd[0])
+    ref_id=ref_id.split(' ')
+    print(ref_id)
+    # print(ref_iid)
+    
+    useriddd=(ref_id[0])
+    print("useriddd is")
+    print(useriddd)
+    amounttt=(ref_id[1])
+    print(amounttt)
+    total_amount=int((ref_id[2]))
+    print(total_amount)
+    booking_amount_percentage=int((int(amounttt)/(int(total_amount)))*100)
+    print(booking_amount_percentage)
+
+    conn = MySQLdb.connect  (user='root', password='Manish@1999',
                               host='127.0.0.1',
                               database='ssrbrokerProject')
 
@@ -580,14 +665,14 @@ def  viewfunds(request,id):
         # print("p is")
         # print(p)
         j=0
-        myTable1=[(('User_ID', 'Name', 'Rank', 'Ref_ID'),)]
+        myTable1=[(('User_ID', 'Name', 'Rank', 'Ref_ID', 'Admin_ID'),)]
         # print(myTable1)
         while j<len(p) :
             useridd2=p[j]
             # print(useridd2)
             #print(useridd2)
             cur = conn.cursor()
-            cur.execute(f'''SELECT matrixapp_customuser.user_id,matrixapp_customuser.username,matrixapp_customuser.rank, matrixapp_superagent.reference_id FROM matrixapp_superagent JOIN matrixapp_customuser ON matrixapp_superagent.admin_id=matrixapp_customuser.id WHERE user_id=%s''',{useridd2})
+            cur.execute(f'''SELECT matrixapp_customuser.user_id,matrixapp_customuser.username,matrixapp_customuser.rank, matrixapp_superagent.reference_id,matrixapp_customuser.id FROM matrixapp_superagent JOIN matrixapp_customuser ON matrixapp_superagent.admin_id=matrixapp_customuser.id WHERE user_id=%s''',{useridd2})
             # cur.execute(f'''SELECT o.user_id, o.rank FROM matrixapp_customuser i.created_at, i.reference_id FROM matrixapp_superagent FROM matrixapp_customuser o LEFT JOIN matrixapp_superagent i on o.id = i.admin_id where user_id=%s''',{useridd2})            
             Data = cur.fetchall()
             # print(Data)
@@ -638,6 +723,22 @@ def  viewfunds(request,id):
             i += 1
         # print(RefIdlist)
 
+        i = 1
+        Ownerid = []
+        while i < len(myTable):
+            z = (myTable[i])
+            # print("z is")
+            # print(z)
+            list1 = list(z)
+            # print(list1)
+            c = (list1[4])
+            Ownerid.append(c)
+
+            i += 1
+
+        print('Owner id is')
+        print(Ownerid)
+
 
         j = 1
         ranklist1 = []
@@ -649,6 +750,32 @@ def  viewfunds(request,id):
             j += 1
         # print(ranklist1)
         ranklist=list(reversed(ranklist1))
+
+
+
+
+
+            # brokrage_transfer=[]
+            # if booking_amount_percentage in range(0,60):
+            #     # print("yes")
+            #     Brokrageamount=5/3*booking_amount_percentage
+            #     brokrage_transfer.append(Brokrageamount)
+
+
+            # elif booking_amount_percentage in range(60,100):
+            #     # print("no")
+            #     Brokrageamount=(int(Rank)/100)*int(total_amount)
+            #     brokrage_transfer.append(Brokrageamount)
+
+            # print(brokrage_transfer)
+
+
+
+
+
+
+
+
 
         k = 0
         l = 1
@@ -664,12 +791,50 @@ def  viewfunds(request,id):
                 finalpercentage1.append(abs(n))
                 k += 1
         finalpercentage=list(reversed(finalpercentage1))
-        # print(finalpercentage)
+        print("final percentage is")
+        print(finalpercentage)
+        # print('Final percentage')
+
+
+
+
+        k=0
+        # l=1
+        finalpercentage2 = []
+        while k < len(finalpercentage):
+            if booking_amount_percentage in range(0,60):
+                a=(finalpercentage[k])
+                v=(((5/3)*booking_amount_percentage)*a)/100
+                print(v)
+                finalpercentage2.append(v)
+                k=k+1
+            else:
+                a=(finalpercentage[k])
+                v=a
+                print(v)
+                finalpercentage2.append(v)
+            # if k != (len(finalpercentage) - 1):
+            #     m = int(int(finalpercentage[k]) - int(finalpercentage[l]))
+            #     finalpercentage2.append(abs(m))
+                k += 1
+                # l += 1
+            # elif booking_amount_percentage in range(60,100):
+            #     v=
+            #     # n = (int(finalpercentage[k]))
+            #     # finalpercentage2.append(abs(n))
+            #     k += 1
+        finalpercentage3=list(finalpercentage2)
+        print("final percentage list 3 is")
+        print(finalpercentage3)
+
+
+
+
 
 
         a = 0
-        while a < len(finalpercentage):
-            distamount = str((finalpercentage[a] * amount) / 100)
+        while a < len(finalpercentage3):
+            distamount = str((finalpercentage3[a] * total_amount) / 100)
             bina=(namelist[a] + ' whose User ID is '+UserIdList[a] + ' and Reference ID is '+RefIdlist[a] + ' will get ' + "Rs." + distamount)
             messages.success(request,bina)
             
@@ -680,6 +845,295 @@ def  viewfunds(request,id):
             # user.save()
             fundetail = FundDetails(user_id= UserIdList[a],ref_id=RefIdlist[a],amount = distamount, user_name = namelist[a]  )
             # book_plot.save()
+            owner=fundetail.owner=Ownerid[a]
+            fundetail.owner = owner
+            
+            fundetail.save()
+            a += 1
+    context={
+        "user_id":useriddd
+    }
+
+    return render(request, 'HOD/viewfunds.html',context)
+
+def  viewfunds(request,id):
+    
+    # Funddetails1 = FundDetails.objects.filter(owner=request.user.id)
+    # ref_id = Installment.objects.filter(id=id)
+    ref_idd = BookPlot.objects.filter(id=id)
+    # ref_iid= BookPlot.ref_id
+    
+    print("ref idd")
+    print(ref_idd)
+    ref_id=str(ref_idd[0])
+    ref_id=ref_id.split(' ')
+    print(ref_id)
+    # print(ref_iid)
+    
+    useriddd=(ref_id[0])
+    print("useriddd is")
+    print(useriddd)
+    amounttt=(ref_id[1])
+    print(amounttt)
+    total_amount=int((ref_id[2]))
+    print(total_amount)
+    booking_amount_percentage=int((int(amounttt)/(int(total_amount)))*100)
+    print(booking_amount_percentage)
+
+    conn = MySQLdb.connect  (user='root', password='Manish@1999',
+                              host='127.0.0.1',
+                              database='ssrbrokerProject')
+
+    
+    useridd=useriddd
+    
+    amount=int(amounttt)
+    if useridd==1:
+        pass
+    else:
+        def getuserid():
+            cur = conn.cursor()
+            cur.execute('''SELECT user_id FROM matrixapp_customuser''')
+            User_ID = cur.fetchall()
+            
+            i = 0
+            j = 0
+            l = []
+            for index in User_ID:
+                b = User_ID[i]
+                k = (b[j])
+                i += 1
+                l.append(k)
+            return l 
+
+            
+        userid = getuserid()
+        # print("userid is")
+        # print(userid)
+        useridd1=useridd
+        # print("useridd1 is")
+        # print(useridd1)
+        i=0
+        p = [useridd1]
+        # print("p is")
+        # print(p)
+        
+        while i<len(userid) :
+
+            if str(useridd1) == userid[i]:
+                cur = conn.cursor()
+                cur.execute(f'''SELECT matrixapp_superagent.reference_id FROM matrixapp_superagent JOIN matrixapp_customuser ON matrixapp_superagent.admin_id=matrixapp_customuser.id WHERE user_id=%s''',(useridd1,))
+                refID = cur.fetchall()
+                print("ref id is")
+                print(refID)
+                if refID==():
+                    messages.success(request,"This booking is done by admin and all fund register into his account")
+                    i=i+1
+                else:
+                    i = 0
+                    j = 0
+                    l = []
+                    for index in refID:
+                        b = refID[i]
+                        k = (b[j])
+                        i += 1
+                        l.append(k)
+                    # print("l is")
+                    # print(l)
+                    refidd= l[0]
+                    # print(refidd)
+                    useridd1=refidd
+                    i=i+1
+                    p.append(useridd1)
+            else:
+                pass
+                i=i+1
+            useridd = useridd1
+        # print("p is")
+        # print(p)
+        j=0
+        myTable1=[(('User_ID', 'Name', 'Rank', 'Ref_ID', 'Admin_ID'),)]
+        # print(myTable1)
+        while j<len(p) :
+            useridd2=p[j]
+            # print(useridd2)
+            #print(useridd2)
+            cur = conn.cursor()
+            cur.execute(f'''SELECT matrixapp_customuser.user_id,matrixapp_customuser.username,matrixapp_customuser.rank, matrixapp_superagent.reference_id,matrixapp_customuser.id FROM matrixapp_superagent JOIN matrixapp_customuser ON matrixapp_superagent.admin_id=matrixapp_customuser.id WHERE user_id=%s''',{useridd2})
+            # cur.execute(f'''SELECT o.user_id, o.rank FROM matrixapp_customuser i.created_at, i.reference_id FROM matrixapp_superagent FROM matrixapp_customuser o LEFT JOIN matrixapp_superagent i on o.id = i.admin_id where user_id=%s''',{useridd2})            
+            Data = cur.fetchall()
+            # print(Data)
+            myTable1.append(Data)
+            
+            j=j+1
+        # print("my table is")
+        # print(myTable1)
+        myTablex=sum(myTable1,())
+        myTable=list(myTablex)
+        # print((myTable))
+        
+        i = 1
+        namelist = []
+        while i < len(myTable):
+            z = (myTable[i])
+            # print("z is")
+            # print(z)
+            list1 = list(z)
+            # print(list1)
+            c = (list1[1])
+            namelist.append(c)
+
+            i += 1
+        # print("namelist is")
+        # print(namelist)
+        i = 1
+        Ownerid = []
+        while i < len(myTable):
+            z = (myTable[i])
+            # print("z is")
+            # print(z)
+            list1 = list(z)
+            # print(list1)
+            c = (list1[4])
+            Ownerid.append(c)
+
+            i += 1
+
+        print('Owner id is')
+        print(Ownerid)
+        i = 1
+        UserIdList = []
+        while i < len(myTable):
+            z = (myTable[i])
+            # print(z)
+            list1 = list(z)
+            c = (list1[0])
+            UserIdList.append(c)
+
+            i += 1
+        # print(UserIdList)
+
+        i = 1
+        RefIdlist = []
+        while i < len(myTable):
+            z = (myTable[i])
+            # print(z)
+            list1 = list(z)
+            c = (list1[3])
+            RefIdlist.append(c)
+
+            i += 1
+        # print(RefIdlist)
+
+
+        j = 1
+        ranklist1 = []
+        while j < len(myTable):
+            z = (myTable[j])
+            list1 = list(z)
+            c = (list1[2])
+            ranklist1.append(c)
+            j += 1
+        # print(ranklist1)
+        ranklist=list(reversed(ranklist1))
+
+
+
+
+
+            # brokrage_transfer=[]
+            # if booking_amount_percentage in range(0,60):
+            #     # print("yes")
+            #     Brokrageamount=5/3*booking_amount_percentage
+            #     brokrage_transfer.append(Brokrageamount)
+
+
+            # elif booking_amount_percentage in range(60,100):
+            #     # print("no")
+            #     Brokrageamount=(int(Rank)/100)*int(total_amount)
+            #     brokrage_transfer.append(Brokrageamount)
+
+            # print(brokrage_transfer)
+
+
+
+
+
+
+
+
+
+        k = 0
+        l = 1
+        finalpercentage1 = []
+        while k < len(ranklist):
+            if k != (len(ranklist) - 1):
+                m = int(int(ranklist[k]) - int(ranklist[l]))
+                finalpercentage1.append(abs(m))
+                k += 1
+                l += 1
+            else:
+                n = (int(ranklist[k]))
+                finalpercentage1.append(abs(n))
+                k += 1
+        finalpercentage=list(reversed(finalpercentage1))
+        print("final percentage is")
+        print(finalpercentage)
+        # print('Final percentage')
+
+
+
+
+        k=0
+        # l=1
+        finalpercentage2 = []
+        while k < len(finalpercentage):
+            if booking_amount_percentage in range(0,60):
+                a=(finalpercentage[k])
+                v=(((5/3)*booking_amount_percentage)*a)/100
+                print(v)
+                finalpercentage2.append(v)
+                k=k+1
+            else:
+                a=(finalpercentage[k])
+                v=a
+                print(v)
+                finalpercentage2.append(v)
+            # if k != (len(finalpercentage) - 1):
+            #     m = int(int(finalpercentage[k]) - int(finalpercentage[l]))
+            #     finalpercentage2.append(abs(m))
+                k += 1
+                # l += 1
+            # elif booking_amount_percentage in range(60,100):
+            #     v=
+            #     # n = (int(finalpercentage[k]))
+            #     # finalpercentage2.append(abs(n))
+            #     k += 1
+        finalpercentage3=list(finalpercentage2)
+        print("final percentage list 3 is")
+        print(finalpercentage3)
+
+
+
+
+
+
+        a = 0
+        while a < len(finalpercentage3):
+            distamount = str((finalpercentage3[a] * total_amount) / 100)
+            bina=(namelist[a] + ' whose User ID is '+UserIdList[a] + ' and Reference ID is '+RefIdlist[a] + ' will get ' + "Rs." + distamount)
+            messages.success(request,bina)
+            
+            # fundetail = FundDetails.objects.get(id=user_id)
+            fundetail = FundDetails.objects.all()
+       
+       
+            # user.save()
+            fundetail = FundDetails(user_id= UserIdList[a],ref_id=RefIdlist[a],amount = distamount, user_name = namelist[a]  )
+            # book_plot.save()
+            owner=fundetail.owner=Ownerid[a]
+            fundetail.owner = owner
+            
             fundetail.save()
             a += 1
 
@@ -688,6 +1142,15 @@ def  viewfunds(request,id):
     }
 
     return render(request, 'HOD/viewfunds.html',context)
+
+def  approvedkyc(request):
+   
+    kycdetails = Kyc.objects.all()
+    context = {
+        'kycdetails' : kycdetails
+    }
+
+    return render(request,'HOD/approvedkyc.html',context)
 
 def  approvedkyc(request):
    
@@ -858,7 +1321,23 @@ def memberList_export_csv(request):
 
 
 def  payplotinstallment(request):
-    return render(request, 'HOD\payplotinstallment.html')
+    booking_data = Installment.objects.all()
+   
+
+    context = {
+        'booking_data': booking_data,
+        
+        
+        # 'code' : code
+
+    }
+    # approval = BookPlot.objects.all()#.order_by('uname')
+    # return render(request,'show.html',)
+    
+
+    # return render(request, 'HOD/approvedplote.html', context)
+
+    return render(request, 'HOD/payplotinstallment.html',context)
 def  updateplotinstallment(request):
     return render(request, 'HOD/updateplotinstallment.html')
 def  updatebookingdate(request):
@@ -877,6 +1356,175 @@ def  pendingPlot(request):
     return render(request, 'HOD/pendingplot.html')
 def  updatekyc(request):
     return render(request, 'HOD/updatekyc.html')
+
+
+def  ADDInstallment(request):
+    
+    selected_customer_id = None
+    selected_plot_no = None
+    customer_Id = Customer.objects.all()
+    plot_no = Installment.objects.all()
+    current_user = request.user
+    code = current_user.user_id
+    
+    rank = current_user.rank
+   
+    plot_number = AddPlot.objects.all()
+
+    if request.method =="POST":
+        if 'newsletter_sub' in request.POST:
+        
+            selected_customer_id = request.POST.get("user_id")
+            customer_Id = customer_Id.filter(customer_id=selected_customer_id)
+
+            selected_plot_no = request.POST.get("plot_no")
+            plot_no = plot_no.filter(plot_number=selected_plot_no)
+            # return render(request, 'HOD/bookplot.html',context)
+            
+
+        
+        if 'demo' in request.POST:
+
+        
+            ref_id = request.POST.get('ref_id')
+        
+            user_id = request.POST.get('user_id')
+        
+            plot_number = request.POST.get('plot_number')
+            amount = request.POST.get('amount')
+            # booking_amount = int(request.POST.get('booking_amount'))
+            remaining_amount = int(request.POST.get('remaining_amt'))
+            payment_amt = int(request.POST.get('payment_amount'))
+            remaining_amount = remaining_amount-payment_amt
+            # print("ddddddddddddddddddddddddd",remaining_amount)
+            no_Installment = request.POST.get('no_Installment')
+            name = request.POST.get('name')
+           
+            mobile_number = request.POST.get('mobile_number')
+            payment_mode = request.POST.get('payment_mode')
+            remarks = request.POST.get('remarks')
+            receipt = request.FILES.get('receipt')
+            # print(ref_id)
+
+            isntallment = Installment(ref_id= ref_id,user_id=user_id,plot_number = plot_number, Payable_amout = amount,remaining_amount=remaining_amount,payment_amount = payment_amt, name = name, mobile_no = mobile_number, payment_mode = payment_mode ,remarks=remarks,receipt=receipt )
+            owner=isntallment.owner=request.user
+            # print("heloooooo",owner)
+            isntallment.owner = owner
+            
+
+            
+            isntallment.save()
+            messages.success(request,"Booking Plot Successfully")
+            return redirect('add_installment')
+    cus_id = Customer.objects.order_by('customer_id').values_list('customer_id', flat=True)
+    plot_num = BookPlot.objects.order_by('plot_number').values_list('plot_number', flat=True)
+        
+
+    context = {
+    'code':code,
+    'rank':rank,
+    'plot_number':plot_number,
+    'cus_id':cus_id,
+    'customer_Id':customer_Id,
+    'selected_customer_id':selected_customer_id,
+
+    'plot_num':plot_num,
+    'plot_no':plot_no,
+    'selected_plot_no':selected_plot_no
+    
+    # 'customer_id':customer_Id,
+    
+
+    }
+    
+
+    return render(request, 'HOD/add_installment.html',context)
+
+
+def Sec_Installment(request):
+
+    selected_customer_id = None
+    selected_plot_no = None
+    customer_Id = Customer.objects.all()
+    plot_no = Installment.objects.all()
+    current_user = request.user
+    code = current_user.user_id
+    
+    rank = current_user.rank
+   
+    plot_number = AddPlot.objects.all()
+
+    if request.method =="POST":
+        if 'newsletter_sub' in request.POST:
+        
+            selected_customer_id = request.POST.get("user_id")
+            customer_Id = customer_Id.filter(customer_id=selected_customer_id)
+
+            selected_plot_no = request.POST.get("plot_number")
+            plot_no = plot_no.filter(plot_number=selected_plot_no)
+            # return render(request, 'HOD/bookplot.html',context)
+            
+
+        
+        if 'demo' in request.POST:
+
+        
+            ref_id = request.POST.get('ref_id')
+        
+            user_id = request.POST.get('user_id')
+        
+            plot_number = request.POST.get('plot_number')
+            amount = request.POST.get('amount')
+            # booking_amount = int(request.POST.get('booking_amount'))
+            remaining_amount = int(request.POST.get('remaining_amt'))
+            payment_amt = int(request.POST.get('payment_amount'))
+            remaining_amount = remaining_amount-payment_amt
+            # print("ddddddddddddddddddddddddd",remaining_amount)
+            no_Installment = request.POST.get('no_Installment')
+            name = request.POST.get('name')
+           
+            mobile_number = request.POST.get('mobile_number')
+            payment_mode = request.POST.get('payment_mode')
+            remarks = request.POST.get('remarks')
+            receipt = request.FILES.get('receipt')
+            # print(ref_id)
+
+            isntallment = Installment(ref_id= ref_id,user_id=user_id,plot_number = plot_number, Payable_amout = amount,remaining_amount=remaining_amount,payment_amount = payment_amt, name = name, mobile_no = mobile_number, payment_mode = payment_mode ,remarks=remarks,receipt=receipt )
+            owner=isntallment.owner=request.user
+            # print("heloooooo",owner)
+            isntallment.owner = owner
+            
+
+            
+            isntallment.save()
+            messages.success(request,"Booking Plot Successfully")
+            return redirect('add_installment')
+    cus_id = Customer.objects.order_by('customer_id').values_list('customer_id', flat=True)
+    plot_num = BookPlot.objects.order_by('plot_number').values_list('plot_number', flat=True)
+        
+
+    context = {
+    'code':code,
+    'rank':rank,
+    'plot_number':plot_number,
+    'cus_id':cus_id,
+    'customer_Id':customer_Id,
+    'selected_customer_id':selected_customer_id,
+
+    'plot_num':plot_num,
+    'plot_no':plot_no,
+    'selected_plot_no':selected_plot_no
+    
+    # 'customer_id':customer_Id,
+    
+
+    }
+    
+
+    return render(request,'HOD/sec_installment.html',context)
+def VIEWInstallment(request):
+    isntallment = Installment.objects.all()
+    return render(request,'HOD/view_installment.html',{'installment':isntallment})    
 
 def  installmentdetail(request):
     # Installment_data = BookPlot.objects.all()
