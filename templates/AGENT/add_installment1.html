@@ -1,27 +1,39 @@
 {% include 'AGENT/base_template.html' %}
+{% load static %}
 {% block content %}
-
 <div class="content-body">
     <div class="container-fluid">
         <div class="page-titles">
-            <label class="form-label text-primary font-weight-bold">Customer Id</label>
+            <label class="form-label text-primary font-weight-bold">Plot Number</label>
             <form method="post">
                 {% csrf_token %}
-                <select name="user_id"  class="form-select">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="searched">
+               {% if searched   %}
+         
+          {% endif %}
+          <br>
+          {% comment %} <label for="userid">User Id</label>
+          <input type="text" value="{% for venues in  venues %}{{venues.customer_id}}{% endfor %}">
+          <label for="userid">Customer Name</label>
+          <input type="text" value="{% for venues in  venues %}{{venues.customer_name}}{% endfor %}"> {% endcomment %}
+
+         
+                {% comment %} <select name="user_id"  class="form-select">
                 
                     <option value=""></option>
                     {% for  cus_id in cus_id %}
                     <option value="{{cus_id}}" {% if selected_customer_id == cus_id %}selected="selected"{% endif %}>{{cus_id}}</option>                
                     {% endfor %}
-                </select> 
-                <label class="form-label text-primary font-weight-bold">Plot No</label>
+                </select>  {% endcomment %}
+                
+                {% comment %} <label class="form-label text-primary font-weight-bold">Plot No</label>
                 <select name="plot_no"  class="form-select">
                 
                     <option value=""></option>
                     {% for  plot_num in plot_num %}
                     <option value="{{plot_num}}" {% if selected_plot_no == plot_num %}selected="selected"{% endif %}>{{plot_num}}</option>                
                     {% endfor %}
-                </select> 
+                </select>  {% endcomment %}
                 <hr>
                 <input type="submit"  name="newsletter_sub" value="Search" class="btn btn-primary">
             </form> 
@@ -74,7 +86,7 @@
                 
                 <div class="card">
                     <div class="card-header bg-dark ">
-                        <h4 class="card-title text-white">My Plot Booking</h4>
+                        <h4 class="card-title text-white">Add Installment</h4>
                     </div>
                     
                         {% include 'includes/messages.html' %}
@@ -85,14 +97,16 @@
                         <div class="form-material">
                             <div class="cod-md-12 mb-3">
                                 <label class="form-label">Ref ID</label>
-                                <input type="text" class="form-control" name="ref_id" id="ref_id" value = "{{code}}" readonly >
+                                <input type="text" class="form-control" name="ref_id" id="ref_id" value = "{% for venues in venues %}{% if forloop.last %}{{venues.ref_id}}{% endif %}{% endfor %}" readonly  readonly >
+                                {% comment %} <input type="text" class="form-control" name="ref_id" id="ref_id" value = "{{code}}" readonly > {% endcomment %}
                             </div>
                             <div class="cod-md-12 mb-3">
                                 <label class="form-label">Customer ID</label>
                                 {% comment %} <input class="form-control" type="text" value="{% for venues in  venues %}{{venues.customer_id}}{% endfor %}" name="user_id" readonly> {% endcomment %}
                                 
                               
-                                <input type="text" class="form-control" name="user_id" id="user_id" value = "{% if selected_customer_id %}{% for customer_Id in customer_Id %}{{ customer_Id.customer_id }}{% endfor %}{% endif %}" readonly >
+                                <input type="text" class="form-control" name="user_id" id="user_id" value = "{% for venues in venues %}{% if forloop.last %}{{venues.user_id}}{% endif %}{% endfor %}" readonly >
+                                {% comment %} <input type="text" class="form-control" name="user_id" id="user_id" value = "{% if selected_customer_id %}{% for customer_Id in customer_Id %}{{ customer_Id.customer_id }}{% endfor %}{% endif %}" readonly > {% endcomment %}
                                 {% comment %} <input type="text" value="{% for venues in  venues %}{{venues.customer_id}}{% endfor %}">
                             </div>
                             </div>
@@ -112,15 +126,16 @@
                                                                    
                                     
                                 </select> {% endcomment %}
-                                <input class="form-control" id="timepicker"  name="plot_number" value="{% if selected_plot_no %} {% for plot_no  in plot_no  %}{% if forloop.last %}{{ plot_no.plot_number}}{% endif %}{% endfor %}{% endif %}" readonly>
+                                
+                                <input class="form-control" id="timepicker"  name="plot_number" value = "{% for venues in venues %}{% if forloop.last %}{{venues.plot_number}}{% endif %}{% endfor %}" readonly>
                             </div>
                             <div class="cod-md-12 mb-3">
                                 <label class="form-label">Payable Amount</label>
-                                <input type="text" class="form-control" id="timepicker" placeholder="Enter in INR" name="amount" value="{% if selected_plot_no %}{% for plot_no  in plot_no  %}{% if forloop.last %}{{ plot_no.Payable_amout }}{% endif %}{% endfor %}{% endif %}" readonly>
+                                <input type="text" class="form-control" id="timepicker" placeholder="Enter in INR" name="amount" value = "{% for venues in venues %}{% if forloop.last %}{{venues.Payable_amout}}{% endif %}{% endfor %}" readonly>
                             </div>
                             <div class="cod-md-12 mb-3">
                                 <label class="form-label">Remaining Amount</label>
-                                <input type="text" class="form-control" id="timepicker"  name="remaining_amt" value="{% if selected_plot_no %}{% for plot_no  in plot_no  %} {% if forloop.last %}{{ plot_no.remaining_amount }} {% endif %}{% endfor %}{% endif %}" readonly>
+                                <input type="text" class="form-control" id="timepicker"  name="remaining_amt" value = "{% for venues in venues %}{% if forloop.last %}{{venues.remaining_amount}}{% endif %}{% endfor %}" readonly>
                                 {% comment %} <input type="text" class="form-control" id="timepicker" placeholder="Enter in INR" name="booking_amount" > {% endcomment %}
                             </div>
                             <div class="cod-md-12 mb-3">
@@ -141,12 +156,12 @@
                             </div> {% endcomment %}
                             <div class="cod-md-12 mb-3">
                                 <label class="form-label">Name</label>
-                                <input type="text" class="form-control" name="name" value="{% if selected_customer_id %}{% for customer_Id in customer_Id %}{{customer_Id.customer_name}}{% endfor %}{% endif %}" readonly>
+                                <input type="text" class="form-control" name="name" value = "{% for venues in venues %}{% if forloop.last %}{{venues.name}}{% endif %}{% endfor %}" readonly>
                             </div>
                            
                             <div class="cod-md-12 mb-3">
                                 <label class="form-label">Mobile Number</label>
-                                <input type="number" id="date-format" class="form-control" name="mobile_number" id="mobile_number" value="{% if selected_customer_id %}{% for customer_Id in customer_Id %}{{customer_Id.cust_mobileno}}{% endfor %}{% endif %}" readonly >
+                                <input type="number" id="date-format" class="form-control" name="mobile_number" id="mobile_number" value = "{% for venues in venues %}{% if forloop.last %}{{venues.mobile_no}}{% endif %}{% endfor %}" readonly >
                             </div>
                             <div class="cod-md-12 mb-3">
                                 <label class="form-label">Payment Mode</label>

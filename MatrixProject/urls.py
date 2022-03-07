@@ -150,6 +150,8 @@ urlpatterns = [
     path('HOD/add_installment', HOD_Views.ADDInstallment, name='add_installment'),
     # path('HOD/Sec_installment', HOD_Views.Sec_Installment, name='Sec_Installment'),
     path('HOD/View_installment', HOD_Views.VIEWInstallment, name='view_installment'),
+    path('HOD/View_installment/export_csv/', HOD_Views.installment_export_csv, name='installment_export_csv'),
+    path('HOD/previewfunds1/export_csv/', HOD_Views.fund_export_csv, name='fund_export_csv'),
 
 
      ########################## define for user url ############################
@@ -157,7 +159,9 @@ urlpatterns = [
     path('Agent/Home', SuperAgent_Views.Home, name='Agent_Home') ,
      path('Agent/add_user/',SuperAgent_Views.AgentADD_USER,name="agentadd_user"),
      path('Agent/customer_view1/',SuperAgent_Views.customer_view1,name="customer_view1"),
-     path('Agent/customer_view1/',SuperAgent_Views.customer_export_csv,name="customer_export-csv1"),
+     path('Agent/customer_view1/export_csv/',SuperAgent_Views.customer_export_csv1,name="customer_export-csv1"),
+     path('Agent/customer_view1/approvedplot/',SuperAgent_Views.approved_export_csv1,name="approved_export-csv1"),
+     path('Agent/View_installment1/approvedplot/',SuperAgent_Views.View_installment1_export_csv1,name="View_installment1_export-csv1"),
      path('AGENT/customer/Edit/<str:id>', SuperAgent_Views.customer_edit1,name="customer_edit1"),
      path('Agent/customer/Update/', SuperAgent_Views.UPDATE_CUSTOMER1,name="update_customer1"),
      path('Agent/customer/Delete/<str:id>',SuperAgent_Views.DELETE_CUSTOMER1,name="delete_customer1"),
@@ -168,6 +172,7 @@ urlpatterns = [
      path('Agent/update_password', SuperAgent_Views.update_password, name='update_password') ,
      path('Agent/update_bank_details', SuperAgent_Views.update_bank_details, name='update_bank_details') ,
      path('Agent/wallet_history', SuperAgent_Views.wallet_history, name='wallet_history') ,
+     path('Agent/wallet_history/export_csv?', SuperAgent_Views.wallet_history_export_csv1, name='wallet_history_export_csv1') ,
      path('Agent/income_details', SuperAgent_Views.income_details, name='income_details') ,
      path('Agent/level_income', SuperAgent_Views.level_income, name='level_income') ,
      path('Agent/get_in_touch', SuperAgent_Views.get_in_touch, name='get_in_touch') ,

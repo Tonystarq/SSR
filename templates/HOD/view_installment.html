@@ -17,7 +17,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title">Booking Details</h4>
+                <h4 class="card-title">Installment Details</h4>
                 {% comment %} <form class="d-flex">
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
@@ -32,7 +32,7 @@
             
             <div class="card-body">
                 <div class="table-responsive">
-                  <a href="{% url 'export-csv' %}"><button type="button" class="btn-group btn-group-sm-1 px-3 btn-secondary text-light">Export CSV</button></a>
+                  <a href="{% url 'installment_export_csv' %}"><button type="button" class="btn-group btn-group-sm-1 px-3 btn-secondary text-light">Export CSV</button></a>
                   {% comment %} <button class="btn-group btn-group-sm-1 px-3 btn-primary " type="button" name="print" aria-label="Print" title="Print" onclick="myfunc()"><i class="fa fa-print "></i> &nbsp;Print</button> {% endcomment %}
                   {% comment %} <button class="btn btn-secondary" type="button" name="print" aria-label="Print" title="Print"><i class="fa fa-print"></i> </button> {% endcomment %}
                   {% comment %} <button type="button" class="btn-group btn-group-sm-2 px-3 ml-2 btn-secondary" onclick = "myfunc()"><i class="fa fa-print"></i></button> {% endcomment %}
@@ -42,6 +42,7 @@
                         <tr>
                           <th>#No</th>
                           <th>Name</th>
+                          <th>Date</th>
                           <th>Customer Id </th>
                           <th>Mobile No </th>
                           {% comment %} <th>Father's Name </th> {% endcomment %}
@@ -65,6 +66,7 @@
                                 <th scope="row">{{forloop.counter}}</th>
                                 {% comment %} <td>Admin</td> {% endcomment %}
                                 <td>{{installment.name}}</td>
+                                <td>{{installment.joinig_date}}</td>
                                 <td>{{installment.user_id}}</td>
                                 {% comment %} <td>{{book_data.father_name}}</td> {% endcomment %}
                                 <td>{{installment.mobile_no}}</td>

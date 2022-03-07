@@ -32,7 +32,7 @@
             
             <div class="card-body">
                 <div class="table-responsive">
-                  <a href="{% url 'export-csv' %}"><button type="button" class="btn-group btn-group-sm-1 px-3 btn-secondary text-light">Export CSV</button></a>
+                  <a href="{% url 'fund_export_csv' %}"><button type="button" class="btn-group btn-group-sm-1 px-3 btn-secondary text-light">Export CSV</button></a>
                   {% comment %} <button class="btn-group btn-group-sm-1 px-3 btn-primary " type="button" name="print" aria-label="Print" title="Print" onclick="myfunc()"><i class="fa fa-print "></i> &nbsp;Print</button> {% endcomment %}
                   {% comment %} <button class="btn btn-secondary" type="button" name="print" aria-label="Print" title="Print"><i class="fa fa-print"></i> </button> {% endcomment %}
                   {% comment %} <button type="button" class="btn-group btn-group-sm-2 px-3 ml-2 btn-secondary" onclick = "myfunc()"><i class="fa fa-print"></i></button> {% endcomment %}
@@ -45,8 +45,8 @@
                           <th>Name </th>
                           <th>Father's Name </th>
                           <th>Plot No</th> {% endcomment %}
-                          <th>Amount </th>
-                          <th>Installment Amount</th>
+                          <th> Plot Amount </th>
+                          <th>Recieved Amount</th>
                           {% comment %} <th>Payment Mode </th>
                           <th>Mobile No </th> {% endcomment %}
                           

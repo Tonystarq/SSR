@@ -57,31 +57,6 @@ def AgentADD_USER(request):
 
 @login_required(login_url='/')
 def  Agent_bookplot(request):
-    
-       # try:
-    #     if request.method =="POST":
-
-    #         searched = request.POST['searched']
-    #         print(searched)
-    #         venues = Customer.objects.filter(customer_id__contains=searched)
-    #         return render(request, 'HOD/bookplot.html',{'searched':searched,'venues':venues})
-    #     else:
-    #         return render(request, 'HOD/bookplot.html',{})
-
-
-    # except MultiValueDictKeyError:
-    #     is_private = False
-    
-        
-       
-
-        
-    # else:
-    #     return render(request, 'HOD/bookplot.html',{})
-
-   
-    # book_plot.owner = owner
-
     selected_customer_id = None
     selected_plot_no = None
     customer_Id = Customer.objects.all()
@@ -151,10 +126,26 @@ def  Agent_bookplot(request):
             receipt = request.FILES.get('receipt')
             print(ref_id)
 
-            book_plot = BookPlot(ref_id= ref_id,user_id=user_id,plot_number = plot_number, Payable_amout = amount,booking_amount=booking_amount,remaining_amount=remaining_amount,Mnthly_Installment = Mnthly_Installment, number_of_Installment = no_Installment, name = name,father_name = father_name , mobile_no = mobile_number, payment_mode = payment_mode ,remarks=remarks,receipt=receipt )
+            book_plot = BookPlot(ref_id= ref_id,user_id=user_id,plot_number = plot_number, Payable_amout = amount,payment_amount=booking_amount,remaining_amount=remaining_amount,Mnthly_Installment = Mnthly_Installment, number_of_Installment = no_Installment, name = name,father_name = father_name , mobile_no = mobile_number, payment_mode = payment_mode ,remarks=remarks,receipt=receipt )
             owner=book_plot.owner=request.user
-            print("heloooooo",owner)
+           
+            # installmentt = Installment()
+            # print("heloooooo",owner)
             book_plot.owner = owner
+
+
+            isntallment = Installment(ref_id= ref_id,user_id=user_id,plot_number = plot_number, Payable_amout = amount,payment_amount = booking_amount,remaining_amount=remaining_amount,name = name, mobile_no = mobile_number, payment_mode = payment_mode ,remarks=remarks,receipt=receipt )
+            owner=isntallment.owner=request.user
+            # print("heloooooo",owner)
+            isntallment.owner = owner
+
+            # if Installment.objects.filter(plot_number = plot_number).exists():
+            #     messages.warning(request, "Plot Number is already Taken")
+            #     return redirect('bookplot')
+            
+            
+
+           
 
             if BookPlot.objects.filter(plot_number = plot_number).exists():
                 messages.warning(request, "Plot Number is already Taken")
@@ -162,6 +153,7 @@ def  Agent_bookplot(request):
             
             
             book_plot.save()
+            isntallment.save()
             messages.success(request,"Booking Plot Successfully")
             return redirect('Agent_bookplot')
     cus_id = Customer.objects.order_by('customer_id').values_list('customer_id', flat=True)
@@ -184,6 +176,7 @@ def  Agent_bookplot(request):
 
     }
     return render(request, 'AGENT/bookplot.html', context)
+
 def  installment_detail(request):
     selected_customer_id = None
     selected_plot_no = None
@@ -546,8 +539,20 @@ def delete_plot1(request,id):
 
 
 def VIEWInstallment1(request):
-    isntallment = Installment.objects.all()
-    return render(request,'AGENT/view_installment1.html',{'installment':isntallment}) 
+    isntallment = Installment.objects.filter(owner=request.user.id)
+    # customer = Customer.objects.filter(owner=request.user.id)
+    current_user = request.user
+    # id =current_user.id
+    # print(id)
+
+    Agent_code = isntallment
+    # code = Agent_code.user_id
+    context = {
+        'installment' : isntallment,
+        # 'code' : code
+    }
+
+    return render(request,'AGENT/view_installment1.html',context) 
 
 def VIEWPlotNo1(request):
     plotno = AddPlot.objects.all()
@@ -556,25 +561,32 @@ def VIEWPlotNo1(request):
 
 def  ADDInstallment1(request):
     
-    selected_customer_id = None
-    selected_plot_no = None
-    customer_Id = Customer.objects.all()
-    plot_no = Installment.objects.all()
+   # selected_customer_id = None
+    # selected_plot_no = None
+    # customer_Id = Customer.objects.all()
+    # plot_no = Installment.objects.all()
     current_user = request.user
     code = current_user.user_id
     
     rank = current_user.rank
    
-    plot_number = AddPlot.objects.all()
+    # plot_number = AddPlot.objects.all()
 
     if request.method =="POST":
         if 'newsletter_sub' in request.POST:
+            searched = request.POST['searched']
+            venues = Installment.objects.filter(plot_number__contains=searched)
+            return render(request, 'AGENT/add_installment1.html',{'searched':searched,'venues':venues})
         
-            selected_customer_id = request.POST.get("user_id")
-            customer_Id = customer_Id.filter(customer_id=selected_customer_id)
 
-            selected_plot_no = request.POST.get("plot_no")
-            plot_no = plot_no.filter(plot_number=selected_plot_no)
+        # else:
+        #     return render(request, 'add_installment.html',{})
+        
+            # selected_customer_id = request.POST.get("user_id")
+            # customer_Id = customer_Id.filter(customer_id=selected_customer_id)
+
+            # selected_plot_no = request.POST.get("plot_no")
+            # plot_no = plot_no.filter(plot_number=selected_plot_no)
             # return render(request, 'HOD/bookplot.html',context)
             
 
@@ -592,6 +604,7 @@ def  ADDInstallment1(request):
             remaining_amount = int(request.POST.get('remaining_amt'))
             payment_amt = int(request.POST.get('payment_amount'))
             remaining_amount = remaining_amount-payment_amt
+            rem = remaining_amount
             # print("ddddddddddddddddddddddddd",remaining_amount)
             no_Installment = request.POST.get('no_Installment')
             name = request.POST.get('name')
@@ -601,32 +614,43 @@ def  ADDInstallment1(request):
             remarks = request.POST.get('remarks')
             receipt = request.FILES.get('receipt')
             # print(ref_id)
+            if rem>=0:
+                isntallment = Installment(ref_id= ref_id,user_id=user_id,plot_number = plot_number, Payable_amout = amount,remaining_amount=remaining_amount,payment_amount = payment_amt, name = name, mobile_no = mobile_number, payment_mode = payment_mode ,remarks=remarks,receipt=receipt )
+                    
+                owner=isntallment.owner=request.user
+                # print("heloooooo",owner)
+                isntallment.owner = owner          
+                isntallment.save()
+                messages.success(request,"Installment Add Successfully")
+                return redirect('add_installment1')
+               
+               
+                
+            else:
+                messages.warning(request, "No more Remaining Amount")
+                return redirect('add_installment1')
+                
 
-            isntallment = Installment(ref_id= ref_id,user_id=user_id,plot_number = plot_number, Payable_amout = amount,remaining_amount=remaining_amount,payment_amount = payment_amt, name = name, mobile_no = mobile_number, payment_mode = payment_mode ,remarks=remarks,receipt=receipt )
-            owner=isntallment.owner=request.user
-            # print("heloooooo",owner)
-            isntallment.owner = owner
-            
 
-            
-            isntallment.save()
-            messages.success(request,"Booking Plot Successfully")
-            return redirect('add_installment1')
-    cus_id = Customer.objects.order_by('customer_id').values_list('customer_id', flat=True)
-    plot_num = BookPlot.objects.order_by('plot_number').values_list('plot_number', flat=True)
+           
+           
+        else:
+            return render(request, 'AGENT/add_installment1.html',{})
+    # cus_id = Customer.objects.order_by('customer_id').values_list('customer_id', flat=True)
+    # plot_num = Installment.objects.order_by('plot_number').values_list('plot_number', flat=True)
         
 
     context = {
     'code':code,
     'rank':rank,
-    'plot_number':plot_number,
-    'cus_id':cus_id,
-    'customer_Id':customer_Id,
-    'selected_customer_id':selected_customer_id,
+    # 'plot_number':plot_number,
+    # 'cus_id':cus_id,
+    # 'customer_Id':customer_Id,
+    # 'selected_customer_id':selected_customer_id,
 
-    'plot_num':plot_num,
-    'plot_no':plot_no,
-    'selected_plot_no':selected_plot_no
+    # 'plot_num':plot_num,
+    # 'plot_no':plot_no,
+    # 'selected_plot_no':selected_plot_no
     
     # 'customer_id':customer_Id,
     
@@ -636,12 +660,115 @@ def  ADDInstallment1(request):
 
     return render(request, 'AGENT/add_installment1.html',context)
 
-
 def  memberlist1(request):
-    all_user = SuperAgent.objects.all()
+    all_user = SuperAgent.objects.filter(admin=request.user.id)
+    # agent_count1 = SuperAgent.objects.filter(admin=request.user.id).count
     # firstname = all_user.username
     # print(firstname)
     context = {
         'all_user':all_user
     }
     return render(request, 'AGENT/memberlist1.html',context)
+
+
+
+
+def customer_export_csv1(request):
+    response = HttpResponse(content_type = 'text/csv')
+    # response['Content-Disposition'] = 'attachment; filename="Approve Po.csv"'
+    response['Content-Disposition'] = 'attachment; filename= customer Details'+ str(datetime.datetime.now())+'.csv'
+    writer = csv.writer(response)
+    writer.writerow(['Customer ID', 'Customer Name', "Father's Name", 'Mobile No'])
+    customer = Customer.objects.filter(owner=request.user.id)
+    
+    for approve in customer:
+        print(approve)
+    
+        writer.writerow(
+                    [approve.customer_id, 
+				approve.customer_name, 
+				approve.cust_father_name, 
+				approve.cust_mobileno])
+           
+
+    return response
+
+
+
+def approved_export_csv1(request):
+    response = HttpResponse(content_type = 'text/csv')
+    # response['Content-Disposition'] = 'attachment; filename="Approve Po.csv"'
+    response['Content-Disposition'] = 'attachment; filename= Booking Details'+ str(datetime.datetime.now())+'.csv'
+    writer = csv.writer(response)
+    writer.writerow(['Name', 'Father Name', 'Plot No', 'Amount', 'Payment Mode', 'Mobile No', 'Ref Id', 'Date', 'Remarks'])
+    approve_plot = BookPlot.objects.filter(owner=request.user.id)
+    for approve in approve_plot:
+        print(approve)
+    
+        writer.writerow(
+                    [approve.name, 
+				approve.father_name, 
+				approve.plot_number, 
+				approve.Payable_amout, 
+				approve.payment_mode, 
+				approve.mobile_no, 
+				approve.ref_id, 
+				approve.joinig_date, 
+				approve.remarks])
+           
+
+    return response
+
+
+def View_installment1_export_csv1(request):
+    approve_plot = Installment.objects.filter(owner=request.user.id)
+    response = HttpResponse(content_type = 'text/csv')
+    # response['Content-Disposition'] = 'attachment; filename="Approve Po.csv"'
+    response['Content-Disposition'] = 'attachment; filename= Installment Details'+ str(datetime.datetime.now())+'.csv'
+    writer = csv.writer(response)
+    writer.writerow(['Customer Name','Customer ID', 'Mobile No','Plot No', 'Plot Rate','Payment Amount' "Remaining Amount",'Payment Mode','Remarks','Date','Ref Id' ])
+    # installment = Installment.objects.all()
+    for approve in approve_plot:
+        print(approve)
+    
+        writer.writerow(
+                    [approve.name, 
+				approve.user_id, 
+				approve.mobile_no, 
+				approve.plot_number, 
+				approve.Payable_amout, 
+				approve.remaining_amount, 
+				approve.payment_amount, 
+				approve.remarks, 
+				approve.joinig_date, 
+				approve.ref_id])
+           
+
+    return response
+
+
+def wallet_history_export_csv1(request):
+    response = HttpResponse(content_type = 'text/csv')
+    # response['Content-Disposition'] = 'attachment; filename="Approve Po.csv"'
+    response['Content-Disposition'] = 'attachment; filename= Wallet Details'+ str(datetime.datetime.now())+'.csv'
+    writer = csv.writer(response)
+    writer.writerow(['User Id', 'Ref ID', 'User Name', 'Amount'])
+    approve_plot = FundDetails.objects.filter(owner=request.user.id)
+    for approve in approve_plot:
+        print(approve)
+    
+        writer.writerow(
+                    [approve.user_id, 
+				approve.ref_id, 
+				approve.user_name, 
+				# approve.amount, 
+				# approve.Payable_amout, 
+				# approve.payment_amount, 
+				# approve.remaining_amount, 
+				# approve.payment_mode, 
+				# approve.remarks,
+                # approve.joinig_date, 
+                approve.amount])
+           
+
+    return response

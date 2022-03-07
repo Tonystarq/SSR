@@ -1403,6 +1403,7 @@ def  ADDInstallment(request):
             remaining_amount = int(request.POST.get('remaining_amt'))
             payment_amt = int(request.POST.get('payment_amount'))
             remaining_amount = remaining_amount-payment_amt
+            rem = remaining_amount
             # print("ddddddddddddddddddddddddd",remaining_amount)
             no_Installment = request.POST.get('no_Installment')
             name = request.POST.get('name')
@@ -1412,19 +1413,28 @@ def  ADDInstallment(request):
             remarks = request.POST.get('remarks')
             receipt = request.FILES.get('receipt')
             # print(ref_id)
+            if rem>=0:
+                isntallment = Installment(ref_id= ref_id,user_id=user_id,plot_number = plot_number, Payable_amout = amount,remaining_amount=remaining_amount,payment_amount = payment_amt, name = name, mobile_no = mobile_number, payment_mode = payment_mode ,remarks=remarks,receipt=receipt )
+                    
+                owner=isntallment.owner=request.user
+                # print("heloooooo",owner)
+                isntallment.owner = owner          
+                isntallment.save()
+                messages.success(request,"Installment Add Successfully")
+                return redirect('add_installment')
+               
+               
+                
+            else:
+                messages.warning(request, "No more Remaining Amount")
+                return redirect('add_installment')
+                
 
-            isntallment = Installment(ref_id= ref_id,user_id=user_id,plot_number = plot_number, Payable_amout = amount,remaining_amount=remaining_amount,payment_amount = payment_amt, name = name, mobile_no = mobile_number, payment_mode = payment_mode ,remarks=remarks,receipt=receipt )
-            owner=isntallment.owner=request.user
-            # print("heloooooo",owner)
-            isntallment.owner = owner
-            
 
-            
-            isntallment.save()
-            messages.success(request,"Installment Add Successfully")
-            return redirect('add_installment')
+           
+           
         else:
-            return render(request, 'search.html',{})
+            return render(request, 'HOD/add_installment.html',{})
     # cus_id = Customer.objects.order_by('customer_id').values_list('customer_id', flat=True)
     # plot_num = Installment.objects.order_by('plot_number').values_list('plot_number', flat=True)
         
@@ -1449,6 +1459,9 @@ def  ADDInstallment(request):
 
     return render(request, 'HOD/add_installment.html',context)
 
+def VIEWInstallment(request):
+    isntallment = Installment.objects.all()
+    return render(request,'HOD/view_installment.html',{'installment':isntallment})
 
 def Sec_Installment(request):
 
@@ -1545,4 +1558,57 @@ def  supportsystem(request):
     return render(request, 'HOD/supportsystem.html')
 # def  userdashboard(request):
 #     return render(request, 'HOD/installmentdetail.html')    
+
+
+
+def installment_export_csv(request):
+    response = HttpResponse(content_type = 'text/csv')
+    # response['Content-Disposition'] = 'attachment; filename="Approve Po.csv"'
+    response['Content-Disposition'] = 'attachment; filename= Installment Details'+ str(datetime.datetime.now())+'.csv'
+    writer = csv.writer(response)
+    writer.writerow(['Customer Name','Customer ID', 'Mobile No','Plot No', 'Plot Rate','Payment Amount' "Remaining Amount",'Payment Mode','Remarks','Date','Ref Id' ])
+    installment = Installment.objects.all()
+    for approve in installment:
+        print(approve)
+    
+        writer.writerow(
+                    [approve.name, 
+				approve.user_id, 
+				approve.mobile_no, 
+				approve.plot_number, 
+				approve.Payable_amout, 
+				approve.remaining_amount, 
+				approve.payment_amount, 
+				approve.remarks, 
+				approve.joinig_date, 
+				approve.ref_id])
+           
+
+    return response
+def fund_export_csv(request):
+    response = HttpResponse(content_type = 'text/csv')
+    # response['Content-Disposition'] = 'attachment; filename="Approve Po.csv"'
+    response['Content-Disposition'] = 'attachment; filename= Fund Details'+ str(datetime.datetime.now())+'.csv'
+    member_list = FundDetails.objects.all()
+    writer = csv.writer(response)
+    writer.writerow(['User Id', 'Ref ID', 'User Name', 'Amount'])
+    
+    for approve in member_list:
+        print(approve)
+    
+        writer.writerow(
+                    [approve.user_id, 
+				approve.ref_id, 
+				approve.user_name, 
+				# approve.amount, 
+				# approve.Payable_amout, 
+				# approve.payment_amount, 
+				# approve.remaining_amount, 
+				# approve.payment_mode, 
+				# approve.remarks,
+                # approve.joinig_date, 
+                approve.amount])
+           
+
+    return response
 

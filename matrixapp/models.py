@@ -50,6 +50,7 @@ class SuperAgent(models.Model):
     # user_id=models.CharField(max_length=50, default=code)
     
     # percentage = models.IntegerField()
+    # owner = models.ForeignKey(to=CustomUser,on_delete=models.CASCADE)
     reference_id = models.CharField(max_length=50)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now_add=True)
@@ -141,6 +142,8 @@ class FundDetails(models.Model):
     ref_id = models.CharField(max_length=50,null=True,blank=True)
     user_name = models.CharField(max_length=50,null=True,blank=True)
     amount = models.CharField(max_length=50,null=True,blank=True)
+    joinig_date=models.DateField(auto_now_add=True,null=True,blank=True)
+
     def __str__(self):
         return self.user_id
 
