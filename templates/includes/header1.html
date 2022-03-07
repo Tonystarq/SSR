@@ -24,7 +24,7 @@
           <div class="dropdown-menu p-0 m-0">
             <form>
               <div class="input-group">
-                <h4><strong>Welcome to SSR Property</strong>&nbsp;<span> {{user.first_name}} {{user.last_name}} </span></h4>
+                <h4><a href="{% url 'admin_home' %}"class="btn btn-primary rounded light me-3">Welcome to SSR Property</a>&nbsp;<span> {{user.first_name}} {{user.last_name}} </span></h4>
                 {% comment %} <input class="form-control" type="search" placeholder="Search Here" aria-label="Search">
                 <span class="search_icon p-3 c-pointer" data-bs-toggle="dropdown">
                    <svg class="ms-1" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

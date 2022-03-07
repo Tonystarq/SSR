@@ -1,6 +1,6 @@
 
 from rest_framework import serializers
-from matrixapp.models import HOD, AddPlot, BookPlot, CustomUser, Customer, Kyc,SuperAgent
+from matrixapp.models import HOD, AddPlot, BookPlot, CustomUser, Customer, Kyc,SuperAgent,Installment
 
 
 class CustomerSerliazer(serializers.ModelSerializer):
@@ -84,3 +84,8 @@ class SuperAgentSerliazer(serializers.ModelSerializer):
         depth = 1    
         
    
+
+class InstallmentSerliazer(serializers.ModelSerializer):
+    class Meta:
+        model = Installment
+        fields = "__all__"   

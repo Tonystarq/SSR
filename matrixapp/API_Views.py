@@ -1,6 +1,6 @@
-from matrixapp.seriealzers import AddPlotSerliazer,CustomerSerliazer,BookPlotSerliazer,KycSerliazer,CustomUserSerliazer,SuperAgentSerliazer#,HODSerliazer
+from matrixapp.seriealzers import AddPlotSerliazer,CustomerSerliazer,BookPlotSerliazer,KycSerliazer,CustomUserSerliazer,SuperAgentSerliazer,InstallmentSerliazer#,HODSerliazer
 from rest_framework.viewsets import ViewSet,ModelViewSet
-from .models import HOD, Customer,AddPlot,BookPlot,Kyc,SuperAgent,CustomUser
+from .models import HOD, Customer,AddPlot,BookPlot, Installment,Kyc,SuperAgent,CustomUser
 from rest_framework.response import Response
 from rest_framework import viewsets
 
@@ -23,6 +23,11 @@ class BookPlotViewSet(ModelViewSet):
 class KYCViewSet(ModelViewSet):
     queryset = Kyc.objects.all()     
     serializer_class  = KycSerliazer
+     
+
+class InstallmentViewSet(ModelViewSet):
+    queryset = Installment.objects.all()     
+    serializer_class  = InstallmentSerliazer
 
 
 # class CustomUserViewSet(viewsets.ModelViewSet):

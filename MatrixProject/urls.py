@@ -18,6 +18,7 @@ router.register('Kyc', API_Views.KYCViewSet,basename="Kyc")
 # router.register('HOD', API_Views.HODViewSet,basename="HOD")
 router.register('User', API_Views.CustomUserViewSet,basename="User")
 router.register('Agent', API_Views.AgentViewSet,basename="Agent")
+router.register('Installment', API_Views.InstallmentViewSet,basename="Installment")
 # from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
 
 # from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -175,6 +176,9 @@ urlpatterns = [
     path('Agent/approvedplot/Edit/<str:id>', SuperAgent_Views.edit_bookplot1,name="edit_bookplot1"),
     path('Agent/approvedplot/Update/', SuperAgent_Views.update_bookplot1,name="update_bookplot1"),
     path('Agent/approvedplot/Delete/<str:id>',SuperAgent_Views.delete_plot1,name="delete_plot1"),
+    path('plotno/View-plotno1', SuperAgent_Views.VIEWPlotNo1,name="view_plotno1"),
+    path('memberlist1/', SuperAgent_Views.memberlist1,name="memberlist1"),
+
     
     path('Agent/add_installment1', SuperAgent_Views.ADDInstallment1, name='add_installment1'),
     # path('HOD/Sec_installment', HOD_Views.Sec_Installment, name='Sec_Installment'),

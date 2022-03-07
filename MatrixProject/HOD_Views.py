@@ -1360,25 +1360,32 @@ def  updatekyc(request):
 
 def  ADDInstallment(request):
     
-    selected_customer_id = None
-    selected_plot_no = None
-    customer_Id = Customer.objects.all()
-    plot_no = Installment.objects.all()
+    # selected_customer_id = None
+    # selected_plot_no = None
+    # customer_Id = Customer.objects.all()
+    # plot_no = Installment.objects.all()
     current_user = request.user
     code = current_user.user_id
     
     rank = current_user.rank
    
-    plot_number = AddPlot.objects.all()
+    # plot_number = AddPlot.objects.all()
 
     if request.method =="POST":
         if 'newsletter_sub' in request.POST:
+            searched = request.POST['searched']
+            venues = Installment.objects.filter(plot_number__contains=searched)
+            return render(request, 'HOD/add_installment.html',{'searched':searched,'venues':venues})
         
-            selected_customer_id = request.POST.get("user_id")
-            customer_Id = customer_Id.filter(customer_id=selected_customer_id)
 
-            selected_plot_no = request.POST.get("plot_no")
-            plot_no = plot_no.filter(plot_number=selected_plot_no)
+        # else:
+        #     return render(request, 'add_installment.html',{})
+        
+            # selected_customer_id = request.POST.get("user_id")
+            # customer_Id = customer_Id.filter(customer_id=selected_customer_id)
+
+            # selected_plot_no = request.POST.get("plot_no")
+            # plot_no = plot_no.filter(plot_number=selected_plot_no)
             # return render(request, 'HOD/bookplot.html',context)
             
 
@@ -1414,23 +1421,25 @@ def  ADDInstallment(request):
 
             
             isntallment.save()
-            messages.success(request,"Booking Plot Successfully")
+            messages.success(request,"Installment Add Successfully")
             return redirect('add_installment')
-    cus_id = Customer.objects.order_by('customer_id').values_list('customer_id', flat=True)
-    plot_num = BookPlot.objects.order_by('plot_number').values_list('plot_number', flat=True)
+        else:
+            return render(request, 'search.html',{})
+    # cus_id = Customer.objects.order_by('customer_id').values_list('customer_id', flat=True)
+    # plot_num = Installment.objects.order_by('plot_number').values_list('plot_number', flat=True)
         
 
     context = {
     'code':code,
     'rank':rank,
-    'plot_number':plot_number,
-    'cus_id':cus_id,
-    'customer_Id':customer_Id,
-    'selected_customer_id':selected_customer_id,
+    # 'plot_number':plot_number,
+    # 'cus_id':cus_id,
+    # 'customer_Id':customer_Id,
+    # 'selected_customer_id':selected_customer_id,
 
-    'plot_num':plot_num,
-    'plot_no':plot_no,
-    'selected_plot_no':selected_plot_no
+    # 'plot_num':plot_num,
+    # 'plot_no':plot_no,
+    # 'selected_plot_no':selected_plot_no
     
     # 'customer_id':customer_Id,
     

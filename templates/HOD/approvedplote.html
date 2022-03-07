@@ -33,7 +33,7 @@
             <div class="card-body">
                 <div class="table-responsive">
                   <a href="{% url 'export-csv' %}"><button type="button" class="btn-group btn-group-sm-1 px-3 btn-secondary text-light">Export CSV</button></a>
-                  <button class="btn-group btn-group-sm-1 px-3 btn-primary " type="button" name="print" aria-label="Print" title="Print" onclick="myfunc()"><i class="fa fa-print "></i> &nbsp;Print</button>
+                  {% comment %} <button class="btn-group btn-group-sm-1 px-3 btn-primary " type="button" name="print" aria-label="Print" title="Print" onclick="myfunc()"><i class="fa fa-print "></i> &nbsp;Print</button> {% endcomment %}
                   {% comment %} <button class="btn btn-secondary" type="button" name="print" aria-label="Print" title="Print"><i class="fa fa-print"></i> </button> {% endcomment %}
                   {% comment %} <button type="button" class="btn-group btn-group-sm-2 px-3 ml-2 btn-secondary" onclick = "myfunc()"><i class="fa fa-print"></i></button> {% endcomment %}
                   <table id="example" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%" >

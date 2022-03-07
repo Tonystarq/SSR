@@ -547,7 +547,11 @@ def delete_plot1(request,id):
 
 def VIEWInstallment1(request):
     isntallment = Installment.objects.all()
-    return render(request,'AGENT/view_installment1.html',{'installment':isntallment})    
+    return render(request,'AGENT/view_installment1.html',{'installment':isntallment}) 
+
+def VIEWPlotNo1(request):
+    plotno = AddPlot.objects.all()
+    return render(request,'AGENT/viewplotno1.html',{'plotno':plotno})      
 
 
 def  ADDInstallment1(request):
@@ -631,3 +635,13 @@ def  ADDInstallment1(request):
     
 
     return render(request, 'AGENT/add_installment1.html',context)
+
+
+def  memberlist1(request):
+    all_user = SuperAgent.objects.all()
+    # firstname = all_user.username
+    # print(firstname)
+    context = {
+        'all_user':all_user
+    }
+    return render(request, 'AGENT/memberlist1.html',context)
