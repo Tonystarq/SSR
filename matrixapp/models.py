@@ -64,10 +64,10 @@ class AddPlot(models.Model):
     
     plot_no = models.CharField(max_length=10)
     plot_size = models.IntegerField(null=True,blank=True)
-    plc_rate = models.IntegerField(null=True,blank=True)
-    plc = models.IntegerField(null=True,blank=True)
+    # plc_rate = models.IntegerField(null=True,blank=True)
+    # plc = models.IntegerField(null=True,blank=True)
     plot_rate = models.IntegerField(null=True,blank=True)
-    discount = models.IntegerField(null=True,blank=True)
+    # discount = models.IntegerField(null=True,blank=True)
 
     def __str__(self):
         return str(self.plot_no)
@@ -91,8 +91,8 @@ class BookPlot(models.Model):
     Payable_amout = models.IntegerField(null=True, blank=True)
     payment_amount = models.IntegerField(null=True, blank=True)
     remaining_amount = models.IntegerField(null=True, blank=True,default=0)    
-    Mnthly_Installment = models.IntegerField(null=True, blank=True)
-    number_of_Installment = models.IntegerField(null=True,blank=True)
+    # Mnthly_Installment = models.IntegerField(null=True, blank=True)
+    # number_of_Installment = models.IntegerField(null=True,blank=True)
     name = models.CharField(max_length=100)
     father_name = models.CharField(max_length=100,null=True,blank=True)
     mobile_no = models.BigIntegerField(null=True,blank=True)
@@ -140,6 +140,8 @@ class FundDetails(models.Model):
     owner = models.CharField(max_length=10)
     user_id = models.CharField(max_length=10)
     ref_id = models.CharField(max_length=50,null=True,blank=True)
+    plot_number = models.CharField(max_length=25,null=True,blank=True)
+    Total_amount = models.CharField(max_length=25,null=True,blank=True)
     user_name = models.CharField(max_length=50,null=True,blank=True)
     amount = models.CharField(max_length=50,null=True,blank=True)
     joinig_date=models.DateField(auto_now_add=True,null=True,blank=True)
@@ -178,4 +180,4 @@ class Installment(models.Model):
     #         self.code = code
     #     super().save(*args, **kwargs)
     def __str__(self):
-        return self.ref_id+" "+ str(self.payment_amount)+" " +str(self.Payable_amout)
+        return self.ref_id+" "+ str(self.payment_amount)+" " +str(self.Payable_amout)+" " +str(self.plot_number)

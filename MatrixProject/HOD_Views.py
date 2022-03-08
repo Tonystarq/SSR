@@ -1,3 +1,4 @@
+import dis
 import json
 # import requests
 from multiprocessing import context
@@ -28,6 +29,8 @@ import MySQLdb
 
 
 @login_required(login_url='/')
+@login_required(login_url='/')
+
 def HOME(request):
     agent_count1=SuperAgent.objects.all().count()
     customer_count1 = Customer.objects.all().count()
@@ -113,14 +116,14 @@ def  addplot(request):
     if request.method == "POST":
         plot_no = request.POST.get("plot_no")
         plot_size = request.POST.get("plot_size")
-        plc_rate = request.POST.get("plc_rate")
-        plc = request.POST.get("plc")
+        # plc_rate = request.POST.get("plc_rate")
+        # plc = request.POST.get("plc")
         plot_rate = request.POST.get("plot_rate")
-        discount = request.POST.get("discount")
+        # discount = request.POST.get("discount")
         print("plotttttt", plot_no, "plot size:", plot_size)
         # add_plot = AddPlot(plot_no= plot_no)
         # add_plot = {'plot_no':plot_no,'plot_size':plot_size, 'plc_rate':plc_rate,'plc':plc, 'plot_rate':plot_rate, 'discount': discount}
-        add_plot = AddPlot(plot_no= plot_no,plot_size = plot_size, plc_rate = plc_rate,plc = plc, plot_rate = plot_rate, discount = discount)
+        add_plot = AddPlot(plot_no= plot_no,plot_size = plot_size, plot_rate = plot_rate)
         # headers={'Content-Type: application/json'}
        
         
@@ -144,7 +147,7 @@ def PLOTDETAILS_export_csv(request):
     # response['Content-Disposition'] = 'attachment; filename="Approve Po.csv"'
     response['Content-Disposition'] = 'attachment; filename= PLOTDetails'+ str(datetime.datetime.now())+'.csv'
     writer = csv.writer(response)
-    writer.writerow(['Plot No', 'Plot Size', "Plc Rate", 'Plc', 'Plot Rate', 'Discount'])
+    writer.writerow(['Plot No', 'Plot Size', 'Plot Rate', 'Discount'])
     plot = AddPlot.objects.all()
     for approve in plot:
         print(approve)
@@ -152,8 +155,7 @@ def PLOTDETAILS_export_csv(request):
         writer.writerow(
                     [approve.plot_no, 
 				approve.plot_size, 
-				approve.plc_rate, 
-				approve.plc,
+				
 				approve.plot_rate,
 				approve.discount])
            
@@ -297,8 +299,8 @@ def  bookplot(request):
             booking_amount = int(request.POST.get('booking_amount'))
             remaining_amount = amount-booking_amount
             # print(remaining_amount)
-            Mnthly_Installment = request.POST.get('Mnthly_installment')
-            no_Installment = request.POST.get('no_Installment')
+            # Mnthly_Installment = request.POST.get('Mnthly_installment')
+            # no_Installment = request.POST.get('no_Installment')
             name = request.POST.get('name')
             father_name = request.POST.get('father_name')
             mobile_number = request.POST.get('mobile_number')
@@ -307,7 +309,7 @@ def  bookplot(request):
             receipt = request.FILES.get('receipt')
             print(ref_id)
 
-            book_plot = BookPlot(ref_id= ref_id,user_id=user_id,plot_number = plot_number, Payable_amout = amount,payment_amount=booking_amount,remaining_amount=remaining_amount,Mnthly_Installment = Mnthly_Installment, number_of_Installment = no_Installment, name = name,father_name = father_name , mobile_no = mobile_number, payment_mode = payment_mode ,remarks=remarks,receipt=receipt )
+            book_plot = BookPlot(ref_id= ref_id,user_id=user_id,plot_number = plot_number, Payable_amout = amount,payment_amount=booking_amount,remaining_amount=remaining_amount, name = name,father_name = father_name , mobile_no = mobile_number, payment_mode = payment_mode ,remarks=remarks,receipt=receipt )
             owner=book_plot.owner=request.user
            
             # installmentt = Installment()
@@ -588,6 +590,9 @@ def  viewfunds1(request,id):
     print(useriddd)
     amounttt=(ref_id[1])
     print(amounttt)
+    plotno=(ref_id[3])
+    print("Plot no is")
+    print(plotno)
     total_amount=int((ref_id[2]))
     print(total_amount)
     booking_amount_percentage=int((int(amounttt)/(int(total_amount)))*100)
@@ -604,257 +609,607 @@ def  viewfunds1(request,id):
     if useridd==1:
         pass
     else:
-        def getuserid():
-            cur = conn.cursor()
-            cur.execute('''SELECT user_id FROM matrixapp_customuser''')
-            User_ID = cur.fetchall()
-            
-            i = 0
-            j = 0
-            l = []
-            for index in User_ID:
-                b = User_ID[i]
-                k = (b[j])
-                i += 1
-                l.append(k)
-            return l 
-
-            
-        userid = getuserid()
-        # print("userid is")
-        # print(userid)
-        useridd1=useridd
-        # print("useridd1 is")
-        # print(useridd1)
-        i=0
-        p = [useridd1]
-        # print("p is")
-        # print(p)
         
-        while i<len(userid) :
+        myTable69=[]
+        
+            
+        cur = conn.cursor()
+        cur.execute('''SELECT plot_number FROM matrixapp_funddetails''')
+            # cur.execute(f'''SELECT o.user_id, o.rank FROM matrixapp_customuser i.created_at, i.reference_id FROM matrixapp_superagent FROM matrixapp_customuser o LEFT JOIN matrixapp_superagent i on o.id = i.admin_id where user_id=%s''',{useridd2})            
+        Data = cur.fetchall()
+            # print(Data)
+        myTable69.append(Data)
+            
+            
+        # print("my table is")
+        print(myTable69)
+        myTablex691=sum(myTable69,(()))
+        myTablex69=sum(myTablex691,(()))
+        myTable6969=list(myTablex69)
+        print(myTable6969)
+        exist_count = myTable6969.count(plotno)
+ 
+        # checking if it is more then 0
+        if exist_count > 0:
+            plottable=[(('Total amount', 'Plot no', 'Recievedamount'),)]
+            cur = conn.cursor()
+            cur.execute(f'''SELECT Total_amount,plot_number,amount from matrixapp_funddetails WHERE plot_number=%s''',(plotno,))
 
-            if str(useridd1) == userid[i]:
-                cur = conn.cursor()
-                cur.execute(f'''SELECT matrixapp_superagent.reference_id FROM matrixapp_superagent JOIN matrixapp_customuser ON matrixapp_superagent.admin_id=matrixapp_customuser.id WHERE user_id=%s''',(useridd1,))
-                refID = cur.fetchall()
-                print("ref id is")
-                print(refID)
-                if refID==():
-                    messages.success(request,"This booking is done by admin and all fund register into his account")
-                    i=i+1
-                else:
+            refID = cur.fetchall()
+            plottable.append(refID)
+            plottable1=sum(plottable,())
+            plottable2=list(plottable1)
+            print(plottable2)
+
+            j=1
+            totalrecieved=0
+            while j<len(plottable2):
+                recieved=plottable2[j]
+                k=(recieved[2])
+                l=float(k)
+                totalrecieved=totalrecieved+l
+                j=j+1
+            
+            print(totalrecieved)
+            total_commission1=plottable2[1]
+            total_commission=total_commission1[0]
+            print(total_commission)
+            total_commission=float(total_commission)
+            print(type(total_commission))
+            difference=total_commission-totalrecieved
+            difference=float(difference)
+            if totalrecieved<total_commission:
+                def getuserid():
+                    cur = conn.cursor()
+                    cur.execute('''SELECT user_id FROM matrixapp_customuser''')
+                    User_ID = cur.fetchall()
+                    
                     i = 0
                     j = 0
                     l = []
-                    for index in refID:
-                        b = refID[i]
+                    for index in User_ID:
+                        b = User_ID[i]
                         k = (b[j])
                         i += 1
                         l.append(k)
-                    # print("l is")
-                    # print(l)
-                    refidd= l[0]
-                    # print(refidd)
-                    useridd1=refidd
+                    return l 
+
+                    
+                userid = getuserid()
+                # print("userid is")
+                # print(userid)
+                useridd1=useridd
+                # print("useridd1 is")
+                # print(useridd1)
+                i=0
+                p = [useridd1]
+                # print("p is")
+                # print(p)
+                
+                while i<len(userid) :
+
+                    if str(useridd1) == userid[i]:
+                        cur = conn.cursor()
+                        cur.execute(f'''SELECT matrixapp_superagent.reference_id FROM matrixapp_superagent JOIN matrixapp_customuser ON matrixapp_superagent.admin_id=matrixapp_customuser.id WHERE user_id=%s''',(useridd1,))
+                        refID = cur.fetchall()
+                        print("ref id is")
+                        print(refID)
+                        if refID==():
+                            messages.success(request,"This booking is done by admin and all fund register into his account")
+                            i=i+1
+                        else:
+                            i = 0
+                            j = 0
+                            l = []
+                            for index in refID:
+                                b = refID[i]
+                                k = (b[j])
+                                i += 1
+                                l.append(k)
+                            # print("l is")
+                            # print(l)
+                            refidd= l[0]
+                            # print(refidd)
+                            useridd1=refidd
+                            i=i+1
+                            p.append(useridd1)
+                    else:
+                        pass
+                        i=i+1
+                    useridd = useridd1
+                # print("p is")
+                # print(p)
+                j=0
+                myTable1=[(('User_ID', 'Name', 'Rank', 'Ref_ID', 'Admin_ID'),)]
+                # print(myTable1)
+                while j<len(p) :
+                    useridd2=p[j]
+                    # print(useridd2)
+                    #print(useridd2)
+                    cur = conn.cursor()
+                    cur.execute(f'''SELECT matrixapp_customuser.user_id,matrixapp_customuser.username,matrixapp_customuser.rank, matrixapp_superagent.reference_id,matrixapp_customuser.id FROM matrixapp_superagent JOIN matrixapp_customuser ON matrixapp_superagent.admin_id=matrixapp_customuser.id WHERE user_id=%s''',{useridd2})
+                    # cur.execute(f'''SELECT o.user_id, o.rank FROM matrixapp_customuser i.created_at, i.reference_id FROM matrixapp_superagent FROM matrixapp_customuser o LEFT JOIN matrixapp_superagent i on o.id = i.admin_id where user_id=%s''',{useridd2})            
+                    Data = cur.fetchall()
+                    # print(Data)
+                    myTable1.append(Data)
+                    
+                    j=j+1
+                # print("my table is")
+                # print(myTable1)
+                myTablex=sum(myTable1,())
+                myTable=list(myTablex)
+                # print((myTable))
+
+
+
+                
+
+
+                
+                i = 1
+                namelist = []
+                while i < len(myTable):
+                    z = (myTable[i])
+                    # print("z is")
+                    # print(z)
+                    list1 = list(z)
+                    # print(list1)
+                    c = (list1[1])
+                    namelist.append(c)
+
+                    i += 1
+                # print("namelist is")
+                # print(namelist)
+                i = 1
+                UserIdList = []
+                while i < len(myTable):
+                    z = (myTable[i])
+                    # print(z)
+                    list1 = list(z)
+                    c = (list1[0])
+                    UserIdList.append(c)
+
+                    i += 1
+                # print(UserIdList)
+
+                i = 1
+                RefIdlist = []
+                while i < len(myTable):
+                    z = (myTable[i])
+                    # print(z)
+                    list1 = list(z)
+                    c = (list1[3])
+                    RefIdlist.append(c)
+
+                    i += 1
+                # print(RefIdlist)
+
+                i = 1
+                Ownerid = []
+                while i < len(myTable):
+                    z = (myTable[i])
+                    # print("z is")
+                    # print(z)
+                    list1 = list(z)
+                    # print(list1)
+                    c = (list1[4])
+                    Ownerid.append(c)
+
+                    i += 1
+
+                print('Owner id is')
+                print(Ownerid)
+
+
+                j = 1
+                ranklist1 = []
+                while j < len(myTable):
+                    z = (myTable[j])
+                    list1 = list(z)
+                    c = (list1[2])
+                    ranklist1.append(c)
+                    j += 1
+                # print(ranklist1)
+                ranklist=list(reversed(ranklist1))
+
+
+
+
+
+                    # brokrage_transfer=[]
+                    # if booking_amount_percentage in range(0,60):
+                    #     # print("yes")
+                    #     Brokrageamount=5/3*booking_amount_percentage
+                    #     brokrage_transfer.append(Brokrageamount)
+
+
+                    # elif booking_amount_percentage in range(60,100):
+                    #     # print("no")
+                    #     Brokrageamount=(int(Rank)/100)*int(total_amount)
+                    #     brokrage_transfer.append(Brokrageamount)
+
+                    # print(brokrage_transfer)
+
+
+
+
+
+
+
+
+
+                k = 0
+                l = 1
+                finalpercentage1 = []
+                while k < len(ranklist):
+                    if k != (len(ranklist) - 1):
+                        m = int(int(ranklist[k]) - int(ranklist[l]))
+                        finalpercentage1.append(abs(m))
+                        k += 1
+                        l += 1
+                    else:
+                        n = (int(ranklist[k]))
+                        finalpercentage1.append(abs(n))
+                        k += 1
+                finalpercentage=list(reversed(finalpercentage1))
+                print("final percentage is")
+                print(finalpercentage)
+                # print('Final percentage')
+
+
+
+
+                k=0
+                # l=1
+                finalpercentage2 = []
+                while k < len(finalpercentage):
+                    if booking_amount_percentage in range(0,60):
+                        a=(finalpercentage[k])
+                        v=(((5/3)*booking_amount_percentage)*a)/100
+                        print(v)
+                        finalpercentage2.append(v)
+                        k=k+1
+                    else:
+                        a=(finalpercentage[k])
+                        v=a
+                        print(v)
+                        finalpercentage2.append(v)
+                    # if k != (len(finalpercentage) - 1):
+                    #     m = int(int(finalpercentage[k]) - int(finalpercentage[l]))
+                    #     finalpercentage2.append(abs(m))
+                        k += 1
+                        # l += 1
+                    # elif booking_amount_percentage in range(60,100):
+                    #     v=
+                    #     # n = (int(finalpercentage[k]))
+                    #     # finalpercentage2.append(abs(n))
+                    #     k += 1
+                finalpercentage3=list(finalpercentage2)
+                print("final percentage list 3 is")
+                print(finalpercentage3)
+
+
+
+
+
+                a = 0
+                while a < len(finalpercentage3):
+                    distamount = str((finalpercentage3[a] * total_amount) / 100)
+                    totalamount=str((finalpercentage[a] * total_amount) / 100)
+                    print(type(difference))
+                    print(type(distamount))
+                    distamount=float(distamount)
+                    if distamount<difference:
+                        distamount=str(distamount)
+                        bina=(namelist[a] + ' whose User ID is '+UserIdList[a] + ' and Reference ID is '+RefIdlist[a] + ' will get ' + "Rs." + distamount)
+                        messages.success(request,bina)
+                        
+                        # fundetail = FundDetails.objects.get(id=user_id)
+                        fundetail = FundDetails.objects.all()
+                
+                
+                        # user.save()
+                        fundetail = FundDetails(user_id= UserIdList[a],ref_id=RefIdlist[a],amount = distamount, user_name = namelist[a],plot_number=plotno,Total_amount= totalamount )
+                        # book_plot.save()
+                        owner=fundetail.owner=Ownerid[a]
+                        fundetail.owner = owner
+                        
+                        fundetail.save()
+                        a += 1
+                    
+                    elif distamount>difference or distamount==difference:
+                        distamount=str(distamount)
+                        difference=str(difference)
+                        bina=(namelist[a] + ' whose User ID is '+UserIdList[a] + ' and Reference ID is '+RefIdlist[a] + ' will get ' + "Rs." + difference)
+                        messages.success(request,bina)
+                        
+                        # fundetail = FundDetails.objects.get(id=user_id)
+                        fundetail = FundDetails.objects.all()
+                
+                
+                        # user.save()
+                        fundetail = FundDetails(user_id= UserIdList[a],ref_id=RefIdlist[a],amount = difference, user_name = namelist[a],plot_number=plotno,Total_amount= totalamount )
+                        # book_plot.save()
+                        owner=fundetail.owner=Ownerid[a]
+                        fundetail.owner = owner
+                        
+                        fundetail.save()
+                        a += 1
+                    else:
+                        messages.success(request,"All the comission has been already transfered.")
+            else:
+                messages.success(request,"All the comission has been already transfered.")
+
+            context={
+                "user_id":useriddd
+            }
+
+            return render(request, 'HOD/viewfunds.html',context)
+
+
+            
+        else:
+            print("No, plotno does not exists in list")
+
+
+            def getuserid():
+                cur = conn.cursor()
+                cur.execute('''SELECT user_id FROM matrixapp_customuser''')
+                User_ID = cur.fetchall()
+                
+                i = 0
+                j = 0
+                l = []
+                for index in User_ID:
+                    b = User_ID[i]
+                    k = (b[j])
+                    i += 1
+                    l.append(k)
+                return l 
+
+                
+            userid = getuserid()
+            # print("userid is")
+            # print(userid)
+            useridd1=useridd
+            # print("useridd1 is")
+            # print(useridd1)
+            i=0
+            p = [useridd1]
+            # print("p is")
+            # print(p)
+            
+            while i<len(userid) :
+
+                if str(useridd1) == userid[i]:
+                    cur = conn.cursor()
+                    cur.execute(f'''SELECT matrixapp_superagent.reference_id FROM matrixapp_superagent JOIN matrixapp_customuser ON matrixapp_superagent.admin_id=matrixapp_customuser.id WHERE user_id=%s''',(useridd1,))
+                    refID = cur.fetchall()
+                    print("ref id is")
+                    print(refID)
+                    if refID==():
+                        messages.success(request,"This booking is done by admin and all fund register into his account")
+                        i=i+1
+                    else:
+                        i = 0
+                        j = 0
+                        l = []
+                        for index in refID:
+                            b = refID[i]
+                            k = (b[j])
+                            i += 1
+                            l.append(k)
+                        # print("l is")
+                        # print(l)
+                        refidd= l[0]
+                        # print(refidd)
+                        useridd1=refidd
+                        i=i+1
+                        p.append(useridd1)
+                else:
+                    pass
                     i=i+1
-                    p.append(useridd1)
-            else:
-                pass
-                i=i+1
-            useridd = useridd1
-        # print("p is")
-        # print(p)
-        j=0
-        myTable1=[(('User_ID', 'Name', 'Rank', 'Ref_ID', 'Admin_ID'),)]
-        # print(myTable1)
-        while j<len(p) :
-            useridd2=p[j]
-            # print(useridd2)
-            #print(useridd2)
-            cur = conn.cursor()
-            cur.execute(f'''SELECT matrixapp_customuser.user_id,matrixapp_customuser.username,matrixapp_customuser.rank, matrixapp_superagent.reference_id,matrixapp_customuser.id FROM matrixapp_superagent JOIN matrixapp_customuser ON matrixapp_superagent.admin_id=matrixapp_customuser.id WHERE user_id=%s''',{useridd2})
-            # cur.execute(f'''SELECT o.user_id, o.rank FROM matrixapp_customuser i.created_at, i.reference_id FROM matrixapp_superagent FROM matrixapp_customuser o LEFT JOIN matrixapp_superagent i on o.id = i.admin_id where user_id=%s''',{useridd2})            
-            Data = cur.fetchall()
-            # print(Data)
-            myTable1.append(Data)
+                useridd = useridd1
+            # print("p is")
+            # print(p)
+            j=0
+            myTable1=[(('User_ID', 'Name', 'Rank', 'Ref_ID', 'Admin_ID'),)]
+            # print(myTable1)
+            while j<len(p) :
+                useridd2=p[j]
+                # print(useridd2)
+                #print(useridd2)
+                cur = conn.cursor()
+                cur.execute(f'''SELECT matrixapp_customuser.user_id,matrixapp_customuser.username,matrixapp_customuser.rank, matrixapp_superagent.reference_id,matrixapp_customuser.id FROM matrixapp_superagent JOIN matrixapp_customuser ON matrixapp_superagent.admin_id=matrixapp_customuser.id WHERE user_id=%s''',{useridd2})
+                # cur.execute(f'''SELECT o.user_id, o.rank FROM matrixapp_customuser i.created_at, i.reference_id FROM matrixapp_superagent FROM matrixapp_customuser o LEFT JOIN matrixapp_superagent i on o.id = i.admin_id where user_id=%s''',{useridd2})            
+                Data = cur.fetchall()
+                # print(Data)
+                myTable1.append(Data)
+                
+                j=j+1
+            # print("my table is")
+            # print(myTable1)
+            myTablex=sum(myTable1,())
+            myTable=list(myTablex)
+            # print((myTable))
+
+
+
             
-            j=j+1
-        # print("my table is")
-        # print(myTable1)
-        myTablex=sum(myTable1,())
-        myTable=list(myTablex)
-        # print((myTable))
+
+
+            
+            i = 1
+            namelist = []
+            while i < len(myTable):
+                z = (myTable[i])
+                # print("z is")
+                # print(z)
+                list1 = list(z)
+                # print(list1)
+                c = (list1[1])
+                namelist.append(c)
+
+                i += 1
+            # print("namelist is")
+            # print(namelist)
+            i = 1
+            UserIdList = []
+            while i < len(myTable):
+                z = (myTable[i])
+                # print(z)
+                list1 = list(z)
+                c = (list1[0])
+                UserIdList.append(c)
+
+                i += 1
+            # print(UserIdList)
+
+            i = 1
+            RefIdlist = []
+            while i < len(myTable):
+                z = (myTable[i])
+                # print(z)
+                list1 = list(z)
+                c = (list1[3])
+                RefIdlist.append(c)
+
+                i += 1
+            # print(RefIdlist)
+
+            i = 1
+            Ownerid = []
+            while i < len(myTable):
+                z = (myTable[i])
+                # print("z is")
+                # print(z)
+                list1 = list(z)
+                # print(list1)
+                c = (list1[4])
+                Ownerid.append(c)
+
+                i += 1
+
+            print('Owner id is')
+            print(Ownerid)
+
+
+            j = 1
+            ranklist1 = []
+            while j < len(myTable):
+                z = (myTable[j])
+                list1 = list(z)
+                c = (list1[2])
+                ranklist1.append(c)
+                j += 1
+            # print(ranklist1)
+            ranklist=list(reversed(ranklist1))
+
+
+
+
+
+                # brokrage_transfer=[]
+                # if booking_amount_percentage in range(0,60):
+                #     # print("yes")
+                #     Brokrageamount=5/3*booking_amount_percentage
+                #     brokrage_transfer.append(Brokrageamount)
+
+
+                # elif booking_amount_percentage in range(60,100):
+                #     # print("no")
+                #     Brokrageamount=(int(Rank)/100)*int(total_amount)
+                #     brokrage_transfer.append(Brokrageamount)
+
+                # print(brokrage_transfer)
+
+
+
+
+
+
+
+
+
+            k = 0
+            l = 1
+            finalpercentage1 = []
+            while k < len(ranklist):
+                if k != (len(ranklist) - 1):
+                    m = int(int(ranklist[k]) - int(ranklist[l]))
+                    finalpercentage1.append(abs(m))
+                    k += 1
+                    l += 1
+                else:
+                    n = (int(ranklist[k]))
+                    finalpercentage1.append(abs(n))
+                    k += 1
+            finalpercentage=list(reversed(finalpercentage1))
+            print("final percentage is")
+            print(finalpercentage)
+            # print('Final percentage')
+
+
+
+
+            k=0
+            # l=1
+            finalpercentage2 = []
+            while k < len(finalpercentage):
+                if booking_amount_percentage in range(0,60):
+                    a=(finalpercentage[k])
+                    v=(((5/3)*booking_amount_percentage)*a)/100
+                    print(v)
+                    finalpercentage2.append(v)
+                    k=k+1
+                else:
+                    a=(finalpercentage[k])
+                    v=a
+                    print(v)
+                    finalpercentage2.append(v)
+                # if k != (len(finalpercentage) - 1):
+                #     m = int(int(finalpercentage[k]) - int(finalpercentage[l]))
+                #     finalpercentage2.append(abs(m))
+                    k += 1
+                    # l += 1
+                # elif booking_amount_percentage in range(60,100):
+                #     v=
+                #     # n = (int(finalpercentage[k]))
+                #     # finalpercentage2.append(abs(n))
+                #     k += 1
+            finalpercentage3=list(finalpercentage2)
+            print("final percentage list 3 is")
+            print(finalpercentage3)
+
+
+
+
+
+
+            a = 0
+            while a < len(finalpercentage3):
+                distamount = str((finalpercentage3[a] * total_amount) / 100)
+                totalamount=str((finalpercentage[a] * total_amount) / 100)
+                bina=(namelist[a] + ' whose User ID is '+UserIdList[a] + ' and Reference ID is '+RefIdlist[a] + ' will get ' + "Rs." + distamount)
+                messages.success(request,bina)
+                
+                # fundetail = FundDetails.objects.get(id=user_id)
+                fundetail = FundDetails.objects.all()
         
-        i = 1
-        namelist = []
-        while i < len(myTable):
-            z = (myTable[i])
-            # print("z is")
-            # print(z)
-            list1 = list(z)
-            # print(list1)
-            c = (list1[1])
-            namelist.append(c)
+        
+                # user.save()
+                fundetail = FundDetails(user_id= UserIdList[a],ref_id=RefIdlist[a],amount = distamount, user_name = namelist[a],plot_number=plotno,Total_amount= totalamount )
+                # book_plot.save()
+                owner=fundetail.owner=Ownerid[a]
+                fundetail.owner = owner
+                
+                fundetail.save()
+                a += 1
+        context={
+            "user_id":useriddd
+        }
 
-            i += 1
-        # print("namelist is")
-        # print(namelist)
-        i = 1
-        UserIdList = []
-        while i < len(myTable):
-            z = (myTable[i])
-            # print(z)
-            list1 = list(z)
-            c = (list1[0])
-            UserIdList.append(c)
-
-            i += 1
-        # print(UserIdList)
-
-        i = 1
-        RefIdlist = []
-        while i < len(myTable):
-            z = (myTable[i])
-            # print(z)
-            list1 = list(z)
-            c = (list1[3])
-            RefIdlist.append(c)
-
-            i += 1
-        # print(RefIdlist)
-
-        i = 1
-        Ownerid = []
-        while i < len(myTable):
-            z = (myTable[i])
-            # print("z is")
-            # print(z)
-            list1 = list(z)
-            # print(list1)
-            c = (list1[4])
-            Ownerid.append(c)
-
-            i += 1
-
-        print('Owner id is')
-        print(Ownerid)
-
-
-        j = 1
-        ranklist1 = []
-        while j < len(myTable):
-            z = (myTable[j])
-            list1 = list(z)
-            c = (list1[2])
-            ranklist1.append(c)
-            j += 1
-        # print(ranklist1)
-        ranklist=list(reversed(ranklist1))
-
-
-
-
-
-            # brokrage_transfer=[]
-            # if booking_amount_percentage in range(0,60):
-            #     # print("yes")
-            #     Brokrageamount=5/3*booking_amount_percentage
-            #     brokrage_transfer.append(Brokrageamount)
-
-
-            # elif booking_amount_percentage in range(60,100):
-            #     # print("no")
-            #     Brokrageamount=(int(Rank)/100)*int(total_amount)
-            #     brokrage_transfer.append(Brokrageamount)
-
-            # print(brokrage_transfer)
-
-
-
-
-
-
-
-
-
-        k = 0
-        l = 1
-        finalpercentage1 = []
-        while k < len(ranklist):
-            if k != (len(ranklist) - 1):
-                m = int(int(ranklist[k]) - int(ranklist[l]))
-                finalpercentage1.append(abs(m))
-                k += 1
-                l += 1
-            else:
-                n = (int(ranklist[k]))
-                finalpercentage1.append(abs(n))
-                k += 1
-        finalpercentage=list(reversed(finalpercentage1))
-        print("final percentage is")
-        print(finalpercentage)
-        # print('Final percentage')
-
-
-
-
-        k=0
-        # l=1
-        finalpercentage2 = []
-        while k < len(finalpercentage):
-            if booking_amount_percentage in range(0,60):
-                a=(finalpercentage[k])
-                v=(((5/3)*booking_amount_percentage)*a)/100
-                print(v)
-                finalpercentage2.append(v)
-                k=k+1
-            else:
-                a=(finalpercentage[k])
-                v=a
-                print(v)
-                finalpercentage2.append(v)
-            # if k != (len(finalpercentage) - 1):
-            #     m = int(int(finalpercentage[k]) - int(finalpercentage[l]))
-            #     finalpercentage2.append(abs(m))
-                k += 1
-                # l += 1
-            # elif booking_amount_percentage in range(60,100):
-            #     v=
-            #     # n = (int(finalpercentage[k]))
-            #     # finalpercentage2.append(abs(n))
-            #     k += 1
-        finalpercentage3=list(finalpercentage2)
-        print("final percentage list 3 is")
-        print(finalpercentage3)
-
-
-
-
-
-
-        a = 0
-        while a < len(finalpercentage3):
-            distamount = str((finalpercentage3[a] * total_amount) / 100)
-            bina=(namelist[a] + ' whose User ID is '+UserIdList[a] + ' and Reference ID is '+RefIdlist[a] + ' will get ' + "Rs." + distamount)
-            messages.success(request,bina)
-            
-            # fundetail = FundDetails.objects.get(id=user_id)
-            fundetail = FundDetails.objects.all()
-       
-       
-            # user.save()
-            fundetail = FundDetails(user_id= UserIdList[a],ref_id=RefIdlist[a],amount = distamount, user_name = namelist[a]  )
-            # book_plot.save()
-            owner=fundetail.owner=Ownerid[a]
-            fundetail.owner = owner
-            
-            fundetail.save()
-            a += 1
-    context={
-        "user_id":useriddd
-    }
-
-    return render(request, 'HOD/viewfunds.html',context)
+        return render(request, 'HOD/viewfunds.html',context)
 
 def  viewfunds(request,id):
     

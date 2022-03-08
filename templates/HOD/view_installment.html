@@ -57,7 +57,7 @@
                           <th>Ref Id</th>
                         
                          
-                          <th>Action</th>
+                         {% comment %} <th>Action</th>  {% endcomment %}
                         </tr>
                     </thead>
                     <tbody>
@@ -88,23 +88,7 @@
                                 <td>2011/04/25</td>
                                 <td>Remarks</td>
                                 <td>Receipt</td> {% endcomment %}
-                                <td>
-                                    <div class="dropdown">
-                                        <button type="button" class="btn btn-warning light sharp" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <svg width="20px" height="20px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#000000" cx="5" cy="12" r="2"></circle><circle fill="#000000" cx="12" cy="12" r="2"></circle><circle fill="#000000" cx="19" cy="12" r="2"></circle></g></svg>
-                                        </button>
-                                        <div class="dropdown-menu" style="">
-                                            <a class="dropdown-item" href="">Edit</a>
-                                            <a class="dropdown-item" href="">Delete</a>
-                                           
-                                        </div>
-                                        {% comment %} <div class="dropdown-menu" style="">
-                                            <a class="dropdown-item" href="{% url 'edit_bookplot' book_data.id %}">Edit</a>
-                                            <a class="dropdown-item" href="{% url 'delete_plot' book_data.id%}">Delete</a>
-                                           
-                                        </div> {% endcomment %}
-                                    </div>
-                                </td>
+                               
                                 {% comment %} <td>Edit</td>
                                 <td>Delete</td>  {% endcomment %}
                             </tr>

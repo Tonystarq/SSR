@@ -125,14 +125,14 @@
                             
                            
                             
-                            <div class="cod-md-12 mb-3">
+                            {% comment %} <div class="cod-md-12 mb-3">
                                 <label class="form-label">Monthly Installment</label>
                                 <input class="form-control" id="installment" placeholder="Enter in INR" name="Mnthly_installment" >
                             </div>
                             <div class="cod-md-12 mb-3">
                                 <label class="form-label">No. of Installment</label>
                                 <input type="number" class="form-control" id="timepicker" placeholder="Enter in INR" name="no_Installment" >
-                            </div>
+                            </div> {% endcomment %}
                             <div class="cod-md-12 mb-3">
                                 <label class="form-label">Name</label>
                                 <input type="text" class="form-control" name="name" value="{% if selected_customer_id %}{% for customer_Id in customer_Id %}{{customer_Id.customer_name}}{% endfor %}{% endif %}" readonly>

@@ -17,23 +17,35 @@ from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 import csv
 import datetime
-# from django.contrib.auth.decorators import login_required
+
 
 @login_required(login_url='/')
 def Home(request):
-    #  book_plot_count1 = BookPlot.objects.all().count
-    # booking_data1 = BookPlot.objects.filter(owner=request.user.id)
+    '''This is the Agent Home function.
+    In this function when someone open the url of Agent_Home, it will return the AGENT/home.html page.
+    The user will be able to see things which are available for agent only.
+    The sidebar, footer, header are linked acoording to agent only.'''
+    
+
+    
     book_plot_count1 = BookPlot.objects.filter(owner=request.user.id).count
     plot_count1 = AddPlot.objects.all().count
     customer_count1 = Customer.objects.filter(owner=request.user.id).count
     
     agent_count1 = SuperAgent.objects.filter(admin=request.user.id).count
-    # print(customer_count1)
+    
 
     return render(request, 'AGENT/home.html',{'agent_count1':agent_count1,'book_plot_count1':book_plot_count1,'plot_count1':plot_count1,"customer_count1":customer_count1})
 
 @login_required
 def AgentADD_USER(request):
+    '''
+    This is the Agent ADD USER function.
+    According to this function when an agent will go through the url of add customer with SSR then Agent will go to the AGENT/add_user.html file.
+    In that html the POST function works on a form and save the detail of new customer in database of Customer Table.
+    The post method also return the same form of creating new customer if the customer id matches with any previous customer id in database.
+    
+    '''
     if request.method == "POST":
         cust_id = request.POST.get('cust_id')
         name = request.POST.get('name')
@@ -41,7 +53,7 @@ def AgentADD_USER(request):
         mob_no = request.POST.get('mob_no')
 
         customer =  Customer(customer_id=cust_id,customer_name=name,cust_father_name=father_name,cust_mobileno=mob_no)
-        # customer =  Customer(customer_id=cust_id)
+        
         if Customer.objects.filter(customer_id = cust_id).exists():
             messages.warning(request, "Customer Id is already Taken")
             return redirect('agentadd_user')
@@ -57,33 +69,23 @@ def AgentADD_USER(request):
 
 @login_required(login_url='/')
 def  Agent_bookplot(request):
+
+    '''
+    The Agent bookplot function can be used for booking plots by agent.
+    According to this function when an agent will go through the url of booking plot for any customer then Agent will go to the AGENT/bookplot.html file.
+    In that html the POST function works on form (previously fetched by selecting custid and plot no from database) and save the detail of new booking plot in database of BookPlot Table and in Installment Table with some less details.
+    The post method also return the same form of booking a new plot if the plot Number matches with any previous plot id in database of BookPlot.
+    '''
+
     selected_customer_id = None
     selected_plot_no = None
     customer_Id = Customer.objects.all()
     plot_no = AddPlot.objects.all()
     current_user = request.user
     code = current_user.user_id
-    
     rank = current_user.rank
-   
-    # context = {
-    #     'code': code,
-    #     'rank':rank,
-    # }
-    
     plot_number = AddPlot.objects.all()
-   
-    # print(customer_Id)
-    
-
-    
-    # user_profile = HOD.objects.all()
   
-
-  
-  
-    
-
     if request.method =="POST":
         if 'newsletter_sub' in request.POST:
         
@@ -92,18 +94,7 @@ def  Agent_bookplot(request):
 
             selected_plot_no = request.POST.get("plot_no")
             plot_no = plot_no.filter(plot_no=selected_plot_no)
-            # return render(request, 'HOD/bookplot.html',context)
             
-
-        
-        
-        # context = {
-
-        #     'cus_id':cus_id,
-        #     'customer_Id':customer_Id,
-        #     'selected_customer_id':selected_customer_id  
-        # }
-        # return render(request, 'HOD/bookplot.html',context)
         if 'demo' in request.POST:
 
         
@@ -115,9 +106,6 @@ def  Agent_bookplot(request):
             amount = int(request.POST.get('amount'))
             booking_amount = int(request.POST.get('booking_amount'))
             remaining_amount = amount-booking_amount
-            # print(remaining_amount)
-            Mnthly_Installment = request.POST.get('Mnthly_installment')
-            no_Installment = request.POST.get('no_Installment')
             name = request.POST.get('name')
             father_name = request.POST.get('father_name')
             mobile_number = request.POST.get('mobile_number')
@@ -126,26 +114,17 @@ def  Agent_bookplot(request):
             receipt = request.FILES.get('receipt')
             print(ref_id)
 
-            book_plot = BookPlot(ref_id= ref_id,user_id=user_id,plot_number = plot_number, Payable_amout = amount,payment_amount=booking_amount,remaining_amount=remaining_amount,Mnthly_Installment = Mnthly_Installment, number_of_Installment = no_Installment, name = name,father_name = father_name , mobile_no = mobile_number, payment_mode = payment_mode ,remarks=remarks,receipt=receipt )
+            book_plot = BookPlot(ref_id= ref_id,user_id=user_id,plot_number = plot_number, Payable_amout = amount,payment_amount=booking_amount,remaining_amount=remaining_amount, name = name,father_name = father_name , mobile_no = mobile_number, payment_mode = payment_mode ,remarks=remarks,receipt=receipt )
             owner=book_plot.owner=request.user
            
-            # installmentt = Installment()
-            # print("heloooooo",owner)
+            
             book_plot.owner = owner
 
 
             isntallment = Installment(ref_id= ref_id,user_id=user_id,plot_number = plot_number, Payable_amout = amount,payment_amount = booking_amount,remaining_amount=remaining_amount,name = name, mobile_no = mobile_number, payment_mode = payment_mode ,remarks=remarks,receipt=receipt )
             owner=isntallment.owner=request.user
-            # print("heloooooo",owner)
             isntallment.owner = owner
 
-            # if Installment.objects.filter(plot_number = plot_number).exists():
-            #     messages.warning(request, "Plot Number is already Taken")
-            #     return redirect('bookplot')
-            
-            
-
-           
 
             if BookPlot.objects.filter(plot_number = plot_number).exists():
                 messages.warning(request, "Plot Number is already Taken")
@@ -169,15 +148,19 @@ def  Agent_bookplot(request):
     'selected_customer_id':selected_customer_id,
     'plot_num':plot_num,
     'plot_no':plot_no,
-    'selected_plot_no':selected_plot_no
-    
-    # 'customer_id':customer_Id,
-    
+    'selected_plot_no':selected_plot_no   
 
     }
     return render(request, 'AGENT/bookplot.html', context)
 
 def  installment_detail(request):
+
+    '''
+    The Agent installment_detail function can be used for booking Installment of any plot previously booked by agent or HOD.
+    According to this function when an agent will go through the url of booking Installment for any customer of a particular plot then Agent wiil go to the AGENT/installmentdetail.html file.
+    In that html the POST function works on form(previously fetched by entering plotno) and save the detail of new booking installment of a plot in database of  Installment Table.
+    '''
+
     selected_customer_id = None
     selected_plot_no = None
     customer_Id = Customer.objects.all()
@@ -186,22 +169,8 @@ def  installment_detail(request):
     code = current_user.user_id
     
     rank = current_user.rank
-   
-    # context = {
-    #     'code': code,
-    #     'rank':rank,
-    # }
-    
+
     plot_number = AddPlot.objects.all()
-   
-    # print(customer_Id)
-    
-
-    
-    # user_profile = HOD.objects.all()
-  
-
-  
   
     
 
@@ -213,18 +182,7 @@ def  installment_detail(request):
 
             selected_plot_no = request.POST.get("plot_no")
             plot_no = plot_no.filter(plot_no=selected_plot_no)
-            # return render(request, 'HOD/bookplot.html',context)
             
-
-        
-        
-        # context = {
-
-        #     'cus_id':cus_id,
-        #     'customer_Id':customer_Id,
-        #     'selected_customer_id':selected_customer_id  
-        # }
-        # return render(request, 'HOD/bookplot.html',context)
         if 'demo' in request.POST:
 
         
@@ -234,8 +192,7 @@ def  installment_detail(request):
         
             plot_number = request.POST.get('plot_number')
             amount = request.POST.get('amount')
-            # Mnthly_Installment = request.POST.get('Mnthly_installment')
-            # no_Installment = request.POST.get('no_Installment')
+           
             name = request.POST.get('name')
             father_name = request.POST.get('father_name')
             mobile_number = request.POST.get('mobile_number')
@@ -261,16 +218,12 @@ def  installment_detail(request):
     'selected_customer_id':selected_customer_id,
     'plot_num':plot_num,
     'plot_no':plot_no,
-    'selected_plot_no':selected_plot_no
-    
-    # 'customer_id':customer_Id,
-    
+    'selected_plot_no':selected_plot_no    
 
     }
-    
-        
-    # return render(request, 'AGENT/bookplot.html', context)
     return render(request, 'AGENT/installmentdetail.html',context)
+
+
 def  editagentdata(request):
     return render(request, 'AGENT/editagentdata.html')
 def  update_account(request):
@@ -279,34 +232,6 @@ def  update_password(request):
     return render(request, 'AGENT/updatepassword.html')
 def  update_bank_details(request):
     return render(request, 'AGENT/update_bank_details.html')
-
-# def  wallet_history(request):
-#     selected_customer_id = None
-#     selected_plot_no = None
-#     customer_Id = Customer.objects.all()
-#     plot_no = AddPlot.objects.all()
-#     current_user = request.user
-#     code = current_user.user_id
-    
-#     rank = current_user.rank
-   
-
-#     Funddetails1 = FundDetails.objects.all()
-
-#     context = {
-#         'Funddetails1': Funddetails1,
-#         'code' : code,
-#         'rank':rank,
-#         # 'plot_number':plot_number,
-#         # 'cus_id':cus_id,
-#         'customer_Id':customer_Id,
-#         'selected_customer_id':selected_customer_id,
-#         # 'plot_num':plot_num,
-#         'plot_no':plot_no,
-#         'selected_plot_no':selected_plot_no
-
-#     }
-#     return render(request, 'AGENT/wallethistory.html', context)
 def  income_details(request):
     return render(request, 'AGENT/income_details.html')
 def  level_income(request):
@@ -315,7 +240,9 @@ def  get_in_touch(request):
     return render(request, 'AGENT/get_in_touch.html')
 
 def  agent_profile(request):
-    # customuser = SuperAgent.objects.get()
+    '''
+    The agent_profile function will return the profile of a specific agent which is currently logged in on AGENT/agent_profile.html page with all the necessary information.
+    '''
     current_user = request.user
     context = {
         'code': current_user
@@ -324,17 +251,18 @@ def  agent_profile(request):
 
 
 def  agent_approvedplot(request):
-    # agent_obj = SuperAgent.objects.get(admin=request.user.id)
+    '''
+    The agent_approvedplot function will get the requesting of viewing the booked plot by the logged in user and return the Agent/approvedplot.html.
+    This function is exporting data from BookPlot according to current user user id.
+    '''
+    
     booking_data1 = BookPlot.objects.filter(owner=request.user.id)
     current_user = request.user
-    # id =current_user.id
-    # print(id)
-
+    
     Agent_code = current_user
     code = Agent_code.user_id
 
-    # booking_data1 = BookPlot.objects.all()
-    # booking_data1 = BookPlot.objects.filter(ref_id=agent_obj)
+    
     print(booking_data1)
 
     context = {
@@ -346,17 +274,14 @@ def  agent_approvedplot(request):
     return render(request, 'Agent/approvedplot.html', context)
    
 def  wallet_history(request):
-    Funddetails1 = FundDetails.objects.filter(owner=request.user.id)
-    # Funddetails1 = FundDetails.objects.all()
-    current_user = request.user
-    # id =current_user.id
-    # print(id)
+    '''
+    
+    '''
 
+    Funddetails1 = FundDetails.objects.filter(owner=request.user.id)
+    current_user = request.user
     Agent_code = current_user
     code = Agent_code.user_id
-
-    # booking_data1 = BookPlot.objects.all()
-    # booking_data1 = BookPlot.objects.filter(ref_id=agent_obj)
     print(Funddetails1)
 
     context = {
