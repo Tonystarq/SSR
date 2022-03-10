@@ -29,8 +29,6 @@ import MySQLdb
 
 
 @login_required(login_url='/')
-@login_required(login_url='/')
-
 def HOME(request):
     agent_count1=SuperAgent.objects.all().count()
     customer_count1 = Customer.objects.all().count()

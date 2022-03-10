@@ -55,6 +55,9 @@ def BASE1(request):
 def pagelogin(request):
     return render(request, 'page-login.html')
 
+# def ssrhome(request):
+#     return render(request, 'fido/default/index.html')
+
 
 def signup_admin(request):
     return render(request,"HOD/signup_admin_page.html")

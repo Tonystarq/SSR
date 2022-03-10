@@ -89,3 +89,14 @@ class InstallmentSerliazer(serializers.ModelSerializer):
     class Meta:
         model = Installment
         fields = "__all__"   
+
+
+
+class LoginSerliazer(serializers.Serializer):
+    email = serializers.EmailField
+    password = serializers.CharField
+    class Meta:
+       
+        fields = ('email','password')  
+        
+

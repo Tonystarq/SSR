@@ -18,10 +18,17 @@ router.register('Kyc', API_Views.KYCViewSet,basename="Kyc")
 # router.register('HOD', API_Views.HODViewSet,basename="HOD")
 router.register('User', API_Views.CustomUserViewSet,basename="User")
 router.register('Agent', API_Views.AgentViewSet,basename="Agent")
+# router.register('Login', API_Views.LoginViewSet.as_view(),basename="Login")
 router.register('Installment', API_Views.InstallmentViewSet,basename="Installment")
+
 # from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
 
 # from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
+
+
+def trigger_error(request):
+    division_by_zero = 1 / 0
 
 
 
@@ -30,7 +37,12 @@ urlpatterns = [
     # path('api/',API_View.Plot_list),
     # path('api/BookPlotList/',API_View.BookPlotList),
     # path('api/KYCList/',API_View.KYCList),
+    # path('api-auth/', include('rest_framework.urls')),
+    # path('sentry-debug/', trigger_error),
+
+    
     path('admin/', admin.site.urls),
+    path('api/Login/',API_Views.LoginViewSet.as_view()),
     path('api/',include(router.urls)),
     path('base', views.BASE, name='base') ,
     path('base1', views.BASE1, name='base1') ,
@@ -39,6 +51,7 @@ urlpatterns = [
 
     # path('', views.LOGIN, name='login') ,
     path('', views.pagelogin, name='login') ,
+    # path('ssrhome', views.ssrhome, name='ssrhome'),
     path('doLogin', views.doLogin, name='doLogin'),
     path('Logout', views.doLogout,name="logout"),
 

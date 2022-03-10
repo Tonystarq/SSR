@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 # import django_heroku
 from pathlib import Path
+# import sentry_sdk 
+# from sentry_sdk.integrations.django import DjangoIntegration
 # import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -72,7 +74,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'MatrixProject.LoginCheckMiddleWare.LoginCheckMiddleWare'
+    # 'MatrixProject.LoginCheckMiddleWare.LoginCheckMiddleWare'
     
     
 ]

@@ -274,14 +274,17 @@ def  agent_approvedplot(request):
     return render(request, 'Agent/approvedplot.html', context)
    
 def  wallet_history(request):
-    '''
-    
-    '''
-
     Funddetails1 = FundDetails.objects.filter(owner=request.user.id)
+    # Funddetails1 = FundDetails.objects.all()
     current_user = request.user
+    # id =current_user.id
+    # print(id)
+
     Agent_code = current_user
     code = Agent_code.user_id
+
+    # booking_data1 = BookPlot.objects.all()
+    # booking_data1 = BookPlot.objects.filter(ref_id=agent_obj)
     print(Funddetails1)
 
     context = {

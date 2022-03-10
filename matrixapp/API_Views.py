@@ -1,8 +1,16 @@
-from matrixapp.seriealzers import AddPlotSerliazer,CustomerSerliazer,BookPlotSerliazer,KycSerliazer,CustomUserSerliazer,SuperAgentSerliazer,InstallmentSerliazer#,HODSerliazer
+import email
+from typing import Generic
+
+
+from matrixapp import seriealzers
+from matrixapp.EmailBackEnd import EmailBackEnd
+from matrixapp.seriealzers import AddPlotSerliazer,CustomerSerliazer,BookPlotSerliazer,KycSerliazer,CustomUserSerliazer,SuperAgentSerliazer,InstallmentSerliazer,LoginSerliazer#,HODSerliazer
 from rest_framework.viewsets import ViewSet,ModelViewSet
 from .models import HOD, Customer,AddPlot,BookPlot, Installment,Kyc,SuperAgent,CustomUser
 from rest_framework.response import Response
-from rest_framework import viewsets
+from rest_framework import viewsets,response
+from django.contrib.auth import authenticate, login, logout
+from rest_framework.generics import GenericAPIView,CreateAPIView
 
 
 class CustomerViewSet(ModelViewSet):
@@ -84,7 +92,35 @@ class AgentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         rates = SuperAgent.objects.all()
-        return rates
+        return rates   
+
+class LoginViewSet(CreateAPIView):
+    serializer_class = LoginSerliazer
+    def post(self,request,*args, **kwargs):
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        print(email,password)
+        user=EmailBackEnd.authenticate(request, username=request.POST.get('email'), password = request.POST.get('password'))
+        if user:
+            # seriealzer = self.serializer_class(user)
+            return response.Response({"message":'login successful'})
+        
+        # if user!=None:
+        #     login(request,user)
+        #     user_type = user.user_type
+        #     if user_type == '1':
+        #         print("hello")
+        #     elif user_type == '2':
+        #         print("world")
+        # else:
+        #     print("error")
+            # messages.error(request,"Invalid Login Or Password!!")
+                
+                # return redirect('Agent_Home')
+                # return redirect('admin_home')
+
+
+   
 
     
 # class AgentViewSet(ModelViewSet):
